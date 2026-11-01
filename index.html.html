@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Беловежская пуща + Брест · 3–5 ноября 2026</title>
+<meta name="description" content="Семейный план поездки: Каменецкая вежа, Беловежская пуща на велосипедах, Брестская крепость.">
+<meta name="theme-color" content="#1f3a2c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3 6 27h20z' fill='%232f5d43'/%3E%3Cpath d='M16 13l-5 14h10z' fill='%23e0a34a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --bg:#f4f1ea; --surface:#fffdf8; --surface-2:#ece7dc; --border:#ddd5c5;
+  --text:#1d2a22; --muted:#5d6b62; --faint:#8a948d;
+  --forest:#2f5d43; --forest-d:#1f3a2c; --amber:#c9822b; --amber-l:#f3dfc0;
+  --d1:#c9822b; --d2:#2f7d52; --d3:#8a3b3b;
+  --radius:16px; --shadow:0 1px 2px rgba(30,40,30,.06),0 6px 20px rgba(30,40,30,.06);
+  --font:'Onest',system-ui,sans-serif; --display:'Unbounded','Onest',sans-serif;
+}
+[data-theme=dark]{
+  --bg:#121814; --surface:#1a221d; --surface-2:#222c26; --border:#2e3a32;
+  --text:#e8ede9; --muted:#a3b0a7; --faint:#77857c;
+  --forest:#6fb08a; --forest-d:#0d1410; --amber:#e8a957; --amber-l:#3a2e1d;
+  --d1:#e8a957; --d2:#5fbf86; --d3:#d97b7b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased;padding-bottom:76px}
+a{color:var(--forest);text-underline-offset:3px}
+button{font:inherit;cursor:pointer;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;letter-spacing:-.01em}
+h2{font-size:clamp(1.35rem,3vw,1.8rem);margin-bottom:6px}
+.sub{color:var(--muted);margin-bottom:22px;max-width:62ch}
+section.wrap{padding-top:44px;padding-bottom:44px}
+section+section{border-top:1px solid var(--border)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:1000;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:58px}
+.brand{font-family:var(--display);font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);white-space:nowrap}
+.nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav a{padding:7px 11px;border-radius:999px;text-decoration:none;color:var(--muted);font-size:.9rem;white-space:nowrap}
+.nav a:hover{background:var(--surface-2);color:var(--text)}
+.iconbtn{width:38px;height:38px;border-radius:999px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;flex-shrink:0}
+@media(max-width:820px){.nav{display:none}.iconbtn{margin-left:auto}}
+
+/* hero */
+.hero{position:relative;color:#f6f2e8;background:var(--forest-d);overflow:hidden}
+.hero svg.trees{position:absolute;inset:auto 0 0 0;width:100%;height:58%;opacity:.95}
+.hero .wrap{position:relative;padding-top:56px;padding-bottom:120px}
+.hero .kicker{display:inline-block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:#f0c98a;margin-bottom:14px}
+.hero h1{font-size:clamp(1.9rem,5.4vw,3.4rem);max-width:16ch}
+.hero p{color:#d6dfd8;max-width:52ch;margin-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-size:.88rem}
+.countdown{margin-top:22px;font-size:.95rem;color:#f0c98a;font-weight:600}
+
+/* search */
+.search{margin-top:-34px;position:relative;z-index:5}
+.search input{width:100%;padding:16px 18px 16px 48px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;box-shadow:var(--shadow)}
+.search .ic{position:absolute;left:34px;top:17px;color:var(--faint)}
+.results{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-top:8px;box-shadow:var(--shadow);max-height:340px;overflow:auto;display:none}
+.results.show{display:block}
+.results button{display:block;width:100%;text-align:left;border:0;background:none;padding:11px 16px;border-bottom:1px solid var(--border)}
+.results button:hover{background:var(--surface-2)}
+.results small{color:var(--muted);display:block}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.tag.ok{background:color-mix(in srgb,var(--d2) 18%,transparent);color:var(--d2)}
+.tag.warn{background:color-mix(in srgb,var(--amber) 20%,transparent);color:var(--amber)}
+.tag.bad{background:color-mix(in srgb,var(--d3) 18%,transparent);color:var(--d3)}
+
+/* weather */
+.weather{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.wday{text-align:center;padding:14px 8px}
+.wday b{font-family:var(--display);font-size:1.3rem;display:block;margin:4px 0}
+.wday small{color:var(--muted)}
+
+/* today */
+.today{border-left:4px solid var(--amber)}
+.today h3{font-size:1.05rem;margin-bottom:4px}
+
+/* days */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{border:1px solid var(--border);background:var(--surface);padding:10px 16px;border-radius:12px;text-align:left;min-width:0}
+.tab b{display:block;font-size:.95rem}
+.tab small{color:var(--muted)}
+.tab[aria-selected=true]{border-color:var(--forest);background:color-mix(in srgb,var(--forest) 10%,var(--surface));box-shadow:inset 0 0 0 1px var(--forest)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:12px;padding:3px;background:var(--surface-2);margin-bottom:16px}
+.seg button{border:0;background:none;padding:8px 14px;border-radius:9px;font-weight:600;font-size:.9rem;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.timeline{list-style:none;position:relative}
+.timeline li{position:relative;padding:0 0 18px 92px}
+.timeline li::before{content:"";position:absolute;left:74px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--dc,var(--forest));box-shadow:0 0 0 4px var(--bg)}
+.timeline li::after{content:"";position:absolute;left:79px;top:20px;bottom:-2px;width:1px;background:var(--border)}
+.timeline li:last-child::after{display:none}
+.timeline .t{position:absolute;left:0;top:2px;width:64px;font-variant-numeric:tabular-nums;font-weight:600;font-size:.88rem;color:var(--muted);text-align:right}
+.timeline h4{font-size:1rem;font-weight:600}
+.timeline p{color:var(--muted);font-size:.93rem}
+.timeline li.now h4{color:var(--amber)}
+.timeline li.now::before{box-shadow:0 0 0 4px var(--bg),0 0 0 7px color-mix(in srgb,var(--amber) 45%,transparent)}
+@media(max-width:520px){.timeline li{padding-left:24px}.timeline li::before{left:0}.timeline li::after{left:5px}.timeline .t{position:static;display:block;text-align:left;width:auto}}
+.note{background:var(--amber-l);border-radius:12px;padding:12px 14px;font-size:.93rem;margin-top:8px}
+[data-theme=dark] .note{color:var(--text)}
+
+/* map */
+#map{height:460px;border-radius:var(--radius);border:1px solid var(--border);z-index:1}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.filters button{border:1px solid var(--border);background:var(--surface);padding:7px 13px;border-radius:999px;font-size:.88rem}
+.filters button[aria-pressed=true]{background:var(--forest);border-color:var(--forest);color:#fff}
+.leaflet-popup-content{font-family:var(--font);font-size:14px}
+.leaflet-popup-content b{display:block;margin-bottom:3px}
+.pin{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35);display:grid;place-items:center}
+.pin span{transform:rotate(45deg);color:#fff;font-size:12px;font-weight:700}
+
+/* routes */
+.route h3{font-size:1.02rem;margin:8px 0 6px}
+.route .meta{display:flex;gap:14px;color:var(--muted);font-size:.9rem;margin-bottom:8px}
+.route.pick{outline:2px solid var(--forest)}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:.93rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+th{color:var(--muted);font-weight:600;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td input{width:90px;padding:7px 8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;text-align:right}
+tfoot td{font-weight:700}
+.tablewrap{overflow-x:auto}
+
+/* checklist */
+.check label{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--forest);margin-top:2px;flex-shrink:0}
+.check input:checked+span{text-decoration:line-through;color:var(--faint)}
+.progress{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin:4px 0 10px}
+.progress i{display:block;height:100%;background:var(--forest);width:0;transition:width .3s}
+
+/* contacts */
+.contact{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.contact small{color:var(--muted);display:block}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;background:var(--forest);color:#fff;text-decoration:none;font-weight:600;font-size:.9rem;white-space:nowrap;border:0}
+.btn.ghost{background:var(--surface-2);color:var(--text)}
+
+footer{background:var(--forest-d);color:#cdd8d0;padding:30px 0;font-size:.9rem}
+footer a{color:#f0c98a}
+
+/* bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:1001;background:var(--surface);border-top:1px solid var(--border);display:none;padding-bottom:env(safe-area-inset-bottom)}
+.bnav a{flex:1;text-align:center;padding:9px 0 8px;text-decoration:none;color:var(--muted);font-size:.72rem;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bnav svg{width:22px;height:22px}
+@media(max-width:820px){.bnav{display:flex}}
+@media(min-width:821px){body{padding-bottom:0}}
+.hl{background:color-mix(in srgb,var(--amber) 35%,transparent);transition:background 1.5s}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="В начало">
+      <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 6 27h20z" fill="var(--forest)"/><path d="M16 13l-5 14h10z" fill="var(--amber)"/></svg>
+      Пуща · 3–5.11
+    </a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#days">Маршрут</a><a href="#map-s">Карта</a><a href="#bike">Велосипеды</a><a href="#near">Рядом</a><a href="#budget">Бюджет</a><a href="#check">Чек-лист</a><a href="#contacts">Контакты</a>
+    </nav>
+    <button class="iconbtn" id="theme" aria-label="Сменить тему">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <svg class="trees" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+    <defs><linearGradient id="fog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f3a2c" stop-opacity="0"/><stop offset="1" stop-color="#162a20"/></linearGradient></defs>
+    <g fill="#284a37">
+      <path d="M0 300V180l40-90 40 90 30-60 35 70 40-110 45 110 30-50 30 60 45-120 45 120 25-40 35 60 40-100 40 100 35-70 30 70 45-130 45 130 30-50 35 60 40-95 45 95 30-60 35 70 40-110 40 110 30-50 35 60 45-120 40 120 25-50 35 60 40-90 40 90V300z"/>
+    </g>
+    <g fill="#1a3125">
+      <path d="M0 300V230l30-70 30 70 35-90 35 90 25-40 30 50 40-100 40 100 30-60 30 60 35-80 35 80 30-50 35 60 45-110 45 110 25-40 30 50 40-90 40 90 30-60 30 60 35-85 35 85 30-40 30 50 45-105 45 105 25-50 30 60 40-80 40 80 30-60 35 60V300z"/>
+    </g>
+    <rect width="1200" height="300" fill="url(#fog)"/>
+  </svg>
+  <div class="wrap">
+    <span class="kicker">Семейная поездка · ноябрь 2026</span>
+    <h1>Беловежская пуща и&nbsp;Брест</h1>
+    <p>Треугольный домик у леса, купель под звёздами, велосипеды среди вековых дубов, зубры, Дед Мороз и Брестская крепость.</p>
+    <div class="chips">
+      <span class="chip">3–5 ноября</span><span class="chip">2 взрослых + дети 7 и 10 лет</span><span class="chip">Forest Soul A-frame, д. Внучки</span><span class="chip">~600 км на машине</span>
+    </div>
+    <div class="countdown" id="countdown"></div>
+  </div>
+</div>
+
+<div class="wrap search" role="search">
+  <svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input id="q" type="search" placeholder="Поиск: зубры, купель, касса, вежа, прокат…" autocomplete="off" aria-label="Поиск по плану">
+  <div class="results" id="results"></div>
+</div>
+
+<main>
+<section class="wrap" id="now-s" style="padding-top:28px;border-top:0">
+  <div class="card today" id="today"></div>
+  <div class="weather" id="weather"></div>
+</section>
+
+<section class="wrap" id="days">
+  <h2>Маршрут по дням</h2>
+  <p class="sub">Вторник, среда, четверг: в эти дни все нужные места открыты. Время примерное, ориентир — закат около 16:30.</p>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div id="daybody"></div>
+</section>
+
+<section class="wrap" id="map-s">
+  <h2>Карта</h2>
+  <p class="sub">Нажмите на точку, чтобы открыть её в навигаторе. Координаты части мест примерные.</p>
+  <div class="filters" id="filters"></div>
+  <div id="map" role="region" aria-label="Карта поездки"></div>
+</section>
+
+<section class="wrap" id="bike">
+  <h2>Веломаршруты пущи</h2>
+  <p class="sub">Старт у главного входа в Каменюках. Нажмите «Выбрать», и маршрут подсветится. Выбор сохраняется.</p>
+  <div class="grid g2" id="routes"></div>
+  <div class="note" style="margin-top:16px"><b>Прокат в ноябре.</b> Частные прокаты пишут, что работают в сезон, апрель–октябрь. Позвоните заранее и подтвердите бронь. Запасной вариант — велосипеды в домике за 7 BYN в час. Для проката нужен паспорт или водительское удостоверение.</div>
+</section>
+
+<section class="wrap" id="near">
+  <h2>Что рядом с домиком</h2>
+  <p class="sub">Деревня Внучки: до главных ворот пущи 8 км, до Каменца около 10 минут.</p>
+  <div class="grid g3" id="nearby"></div>
+</section>
+
+<section class="wrap" id="budget">
+  <h2>Бюджет на месте</h2>
+  <p class="sub">Без жилья. Вписывайте фактические траты, они сохраняются на этом устройстве.</p>
+  <div class="card tablewrap">
+    <table>
+      <thead><tr><th>Статья</th><th class="num">План, BYN</th><th class="num">Факт, BYN</th></tr></thead>
+      <tbody id="btable"></tbody>
+      <tfoot><tr><td>Итого</td><td class="num" id="bplan"></td><td class="num" id="bfact"></td></tr></tfoot>
+    </table>
+  </div>
+</section>
+
+<section class="wrap" id="check">
+  <h2>Чек-лист</h2>
+  <p class="sub">Отметки сохраняются на этом устройстве.</p>
+  <div class="card check">
+    <div class="progress"><i id="prog"></i></div>
+    <div id="clist"></div>
+  </div>
+</section>
+
+<section class="wrap" id="contacts">
+  <h2>Контакты</h2>
+  <p class="sub">Номера с официальных сайтов и страниц прокатов.</p>
+  <div class="card" id="clinks"></div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Беловежская пуща + Брест · 3–5 ноября 2026 · 4 человека.<br>
+    Источники: <a href="https://npbp.by/contacts/vremya-raboty-obektov/">npbp.by</a>, <a href="https://www.brest-fortress.by/">brest-fortress.by</a>, <a href="https://www.rw.by/corporate/history/museums.php">rw.by</a>, <a href="https://vb.by/gazeta/priglasitelnyj-bilet/s-1-noyabrya-brestskie-muzei-menyayut-grafik-raboty.html">vb.by</a>, <a href="https://belbooking.by/top/brest/kottedz/forest-soul-afreim">belbooking.by</a>. Цены и часы перед выездом лучше перепроверить.
+  </div>
+</footer>
+
+<nav class="bnav" aria-label="Быстрая навигация">
+  <a href="#now-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Сейчас</a>
+  <a href="#days"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Дни</a>
+  <a href="#map-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Карта</a>
+  <a href="#bike"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-8h5l3 8M10 9 8 6H6"/></svg>Вело</a>
+  <a href="#check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 12 5 5L20 6"/></svg>Чек-лист</a>
+</nav>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ================== ДАННЫЕ (правьте здесь) ================== */
+const TRIP_START = new Date('2026-11-03T08:30:00+03:00');
+const PLACES = [
+  {id:'home', n:'Forest Soul A-frame', d:'Ваш домик: д. Внучки, 4. Купель, камин, проектор, мангал.', c:[52.4822,23.7410], cat:'home', day:[1,2,3], url:'https://belbooking.by/top/brest/kottedz/forest-soul-afreim'},
+  {id:'smuga', n:'Озеро Смуга', d:'Маленькое лесное озеро на северной окраине Внучек.', c:[52.4855,23.7395], cat:'nature', day:[1]},
+  {id:'veza', n:'Каменецкая вежа', d:'Башня XIII века, 5 ярусов музея. С 1.11: 10:00–18:00, вход до 17:30, пн выходной.', c:[52.4006,23.8128], cat:'museum', day:[1]},
+  {id:'gate', n:'Главный вход и кассы НП', d:'Каменюки. Касса справа от ворот, здесь же стартуют веломаршруты.', c:[52.5733,23.8045], cat:'bike', day:[2]},
+  {id:'museum', n:'Музей природы', d:'9:00–18:00. 14 / 9 BYN.', c:[52.5725,23.8016], cat:'museum', day:[2]},
+  {id:'zoo', n:'Экскурсионные вольеры', d:'Зубры, олени, волки, медведь, орлан. 9:00–18:00, лучше до 16:00. 14 / 9 BYN.', c:[52.5722,23.7999], cat:'nature', day:[2]},
+  {id:'frost', n:'Поместье Деда Мороза', d:'10:00–18:00, пн выходной. 40 / 30 BYN. Автобусы 11:00, 13:30, 16:00 при группе от 10 человек.', c:[52.6170,23.8950], cat:'nature', day:[2]},
+  {id:'archeo', n:'Археологический музей под открытым небом', d:'800 м от касс. 10:00–18:00.', c:[52.5705,23.8085], cat:'museum', day:[2]},
+  {id:'velohub', n:'Прокат ВелоХаб', d:'Каменюки, Каменюкская, 3. 800 м от входа. +375 33 605-33-33.', c:[52.5690,23.8110], cat:'bike', day:[2]},
+  {id:'fortress', n:'Брестская крепость', d:'Территория 8:00–24:00, бесплатно. Музей обороны 9:00–18:00, 12 / 6 BYN. 1–8 ноября без выходных.', c:[52.0832,23.6610], cat:'museum', day:[3]},
+  {id:'rail', n:'Музей железнодорожной техники', d:'пр-т Машерова, 2. Окт–апр 10:00–19:00, касса до 18:30, выходные пн и вт.', c:[52.0905,23.6680], cat:'museum', day:[3]},
+  {id:'sovet', n:'Советская улица', d:'Пешеходная улица Бреста: ужин, прогулка, вечерние фонари.', c:[52.0915,23.6895], cat:'food', day:[3]},
+  {id:'volchin', n:'Троицкий костёл, Волчин', d:'Барочный костёл 1733 года необычной формы.', c:[52.3125,23.5750], cat:'extra', day:[]},
+  {id:'vysokoe', n:'Высокое: руины замка Сапегов', d:'Остатки дворцово-паркового ансамбля.', c:[52.3700,23.3790], cat:'extra', day:[]},
+];
+const CATS = {home:['Жильё','#c9822b','⌂'], nature:['Природа','#2f7d52','✿'], museum:['Музеи','#3d5a80','M'], bike:['Велосипеды','#5c4b8a','B'], food:['Еда, прогулка','#8a3b3b','●'], extra:['Дополнительно','#6b7280','+']};
+
+const DAYS = [
+  {id:1, date:'2026-11-03', title:'Дорога, вежа, купель', short:'Вт, 3 ноября', color:'var(--d1)', items:[
+    ['08:30','Выезд из Лиды','~250–280 км, около 4 часов с остановками.'],
+    ['12:30','Обед в Каменце',''],
+    ['13:00','Каменецкая вежа','Башня XIII века, 5 ярусов. Взрослый 8,45 BYN, школьник 4,15 BYN. Зимой выход на крышу могут закрыть.','veza'],
+    ['14:30','Продукты','На ужин, завтрак и мангал. Магазины в Каменце, есть и в Каменюках.'],
+    ['15:00','Заселение','Forest Soul A-frame, около 10 минут от Каменца.','home'],
+    ['15:30','Прогулка к озеру Смуга','По краю леса, пока светло.','smuga'],
+    ['17:00','Костёр и мангал','Дрова, уголь и розжиг есть в доме.'],
+    ['19:00','Горячая купель','Доплата. Заранее попросите хозяев растопить к этому времени.'],
+    ['20:30','Камин и кино','Проектор, винил, пледы.'],
+  ]},
+  {id:2, date:'2026-11-04', title:'Пуща на велосипедах', short:'Ср, 4 ноября', color:'var(--d2)', plans:{
+    A:{label:'План А · 27 км с Дедом Морозом', items:[
+      ['09:30','Касса у главных ворот','Билеты на маршрут, прокат, билеты к Деду Морозу. Возьмите паспорт.','gate'],
+      ['10:00','Старт «Большого путешествия»','Красный дуб, дуб-отшельник, сросшиеся сосны, Ляцкое водохранилище, дуб-патриарх.'],
+      ['12:00','Поместье Деда Мороза','Примерно середина пути. Терем, Снегурочка, сказочные беседки, перекус.','frost'],
+      ['13:00','Обратный путь','Кормовая поляна, ясеневый лес, урочище Докудово.'],
+      ['14:30','Вольеры','Зубры, олени, волки, медведь, орлан.','zoo'],
+      ['16:00','Музей природы','Хороший вариант, когда на улице темнеет.','museum'],
+      ['17:30','Ужин и купель','В Каменюках или дома.'],
+    ]},
+    B:{label:'План Б · щадящий', items:[
+      ['10:00','«Царская поляна»','10 км, около 1,5 часа. Легко для 7-летнего.','gate'],
+      ['11:45','Вольеры','','zoo'],
+      ['13:30','Автобус к Деду Морозу','Только при группе от 10 человек, утром уточните в кассе.','frost'],
+      ['15:00','Музей природы','','museum'],
+      ['16:00','Археологический музей','Под открытым небом, 800 м от касс.','archeo'],
+      ['17:30','Ужин и купель',''],
+    ]}
+  }},
+  {id:3, date:'2026-11-05', title:'Брест и дорога домой', short:'Чт, 5 ноября', color:'var(--d3)', items:[
+    ['09:00','Завтрак, прогулка, сборы',''],
+    ['12:00','Выезд в Брест','~40 км, около 45 минут.','home'],
+    ['13:00','Брестская крепость','Главный вход «Звезда», монумент «Мужество», Холмские ворота, Музей обороны.','fortress'],
+    ['15:45','Музей ж/д техники','Паровозы, бронепоезда, макеты. Касса до 18:30.','rail'],
+    ['17:15','Советская улица','Ужин и вечерняя прогулка.','sovet'],
+    ['18:30','Дорога домой','~3,5–4 часа.'],
+  ]},
+];
+
+const ROUTES = [
+  {id:'tsar', n:'Царская поляна', km:10, h:'~1,5 ч', lvl:['Лёгкий','ok'], kid:'Да, точно', d:'Самый короткий маршрут, хорошо подходит для разминки.', src:'https://sova.live/puteshestviya-i-otdyh/1079-belovezhskaya-puscha'},
+  {id:'forest', n:'Лесные тайны', km:16, h:'2,5 ч', lvl:['Средний','warn'], kid:'Да, с остановками', d:'Твёрдое покрытие. Дуб-отшельник, кормовая поляна, пограничная застава, вольеры.', src:'https://npbp.by/tours/forest-secrets/'},
+  {id:'great', n:'Большое путешествие', km:27, h:'4 ч', lvl:['Средний','warn'], kid:'Если уверенно едет', d:'Дуб-патриарх, Ляцкое озеро, Поместье Деда Мороза, Докудово, вольеры.', src:'https://npbp.by/tours/great-trip/'},
+  {id:'secret', n:'Тайные тропы', km:25, h:'5 ч', lvl:['Сложный','bad'], kid:'Нет', d:'Грунт и лесные тропы, для подготовленных велосипедистов.', src:'https://npbp.by/tours/taynye-tropy/'},
+];
+
+const NEARBY = [
+  ['Озеро Смуга','Пешком','Маленькое лесное озеро у дома: утренний кофе, рыбалка.','smuga'],
+  ['Каменецкая вежа','~10 мин','Башня XIII века, символ Беларуси.','veza'],
+  ['Беловежская пуща, Каменюки','8 км','Вольеры, музеи, веломаршруты, Дед Мороз.','gate'],
+  ['Волчин','~35 мин','Троицкий костёл 1733 года необычной формы.','volchin'],
+  ['Высокое','~45 мин','Руины замка и дворцово-паркового ансамбля Сапегов.','vysokoe'],
+  ['Полёт на Ан-2','Каменец','Лётный комплекс «Западное», работу в ноябре уточняйте.','veza'],
+];
+
+const BUDGET = [
+  ['Каменецкая вежа',25],['Пуща: маршрут и прокат 4 велосипедов',150],['Вольеры и Музей природы',55],
+  ['Поместье Деда Мороза',140],['Брестская крепость',36],['Музей ж/д техники',25],['Купель',0],['Еда',300],['Бензин',150]
+];
+
+const CHECK = [
+  'Подтвердить прокат на 4.11 (2 взрослых, подростковый для 10 лет, детский для 7 лет), спросить про шлемы',
+  'Договориться с хозяевами о купели на 3.11 (и 4.11?), уточнить цену',
+  'Паспорта или права для проката',
+  'Шапки под шлем, перчатки, тёплые слои',
+  'Сменная обувь и дождевики',
+  'Термос, перекус на велодень',
+  'Налобные фонарики, светоотражатели',
+  'Мясо и продукты на мангал (купить в Каменце)',
+  'Посмотреть прогноз на 4.11: если дождь, переходите на план Б',
+  'Наличные BYN на кассу и прокат',
+];
+
+const CONTACTS = [
+  ['Экскурсии НП «Беловежская пуща»','круглосуточно','+375333991922'],
+  ['ВелоХаб, прокат','Каменюки, Каменюкская, 3','+375336053333'],
+  ['BYcycle, прокат','Каменюки, Сосновая, 24А','+375445143054'],
+  ['E-ride, прокат','Каменюки','+375292247571'],
+  ['Каменецкая вежа','музей','+375162209650'],
+  ['Брестская крепость, экскурсии','Viber / WhatsApp','+375295424274'],
+  ['Музей ж/д техники','Брест','+375162263764'],
+];
+
+/* ================== ЛОГИКА ================== */
+const $ = s => document.querySelector(s);
+const store = {get:(k,d)=>{try{return JSON.parse(localStorage.getItem('pushcha:'+k))??d}catch{return d}}, set:(k,v)=>{try{localStorage.setItem('pushcha:'+k,JSON.stringify(v))}catch{}}};
+const P = Object.fromEntries(PLACES.map(p=>[p.id,p]));
+const navUrl = c => `https://yandex.by/maps/?rtext=~${c[0]},${c[1]}&rtt=auto`;
+const gUrl = c => `https://www.google.com/maps/dir/?api=1&destination=${c[0]},${c[1]}`;
+
+// theme
+const applyTheme = t => document.documentElement.dataset.theme = t;
+applyTheme(store.get('theme', matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+$('#theme').onclick = () => { const t = document.documentElement.dataset.theme==='dark'?'light':'dark'; applyTheme(t); store.set('theme',t); };
+
+// countdown
+(function(){
+  const diff = TRIP_START - new Date();
+  const el = $('#countdown');
+  if (diff > 0){ const d=Math.floor(diff/864e5), h=Math.floor(diff%864e5/36e5); el.textContent = `До выезда: ${d} дн ${h} ч`; }
+  else if (new Date() < new Date('2026-11-06')) el.textContent = 'Поездка идёт. Хорошего отдыха!';
+  else el.textContent = 'Поездка завершена';
+})();
+
+// days
+let curDay = 1, plan = store.get('plan','A');
+function dayItems(d){ return d.plans ? d.plans[plan].items : d.items; }
+function renderTabs(){
+  $('#tabs').innerHTML = DAYS.map(d=>`<button class="tab" role="tab" aria-selected="${d.id===curDay}" data-d="${d.id}"><b>День ${d.id} · ${d.title}</b><small>${d.short}</small></button>`).join('');
+  $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{curDay=+b.dataset.d;renderTabs();renderDay();focusDay(curDay)});
+}
+function nowIndex(d){
+  const now = new Date(); const ds = now.toISOString().slice(0,10);
+  const local = new Date(now.getTime()+3*36e5).toISOString().slice(0,10);
+  if (local!==d.date) return -1;
+  const hm = new Date(now.getTime()+3*36e5).toISOString().slice(11,16);
+  const it = dayItems(d); let idx=-1; it.forEach((x,i)=>{ if(x[0]<=hm) idx=i; }); return idx;
+}
+function renderDay(){
+  const d = DAYS.find(x=>x.id===curDay);
+  let html = '';
+  if (d.plans) html += `<div class="seg" role="group" aria-label="Вариант дня">${Object.entries(d.plans).map(([k,v])=>`<button data-p="${k}" aria-pressed="${plan===k}">${v.label}</button>`).join('')}</div>`;
+  const ni = nowIndex(d);
+  html += `<div class="card"><ol class="timeline" style="--dc:${d.color}">` + dayItems(d).map((x,i)=>`<li class="${i===ni?'now':''}" id="it-${d.id}-${i}"><span class="t">${x[0]}</span><h4>${x[1]}</h4>${x[2]?`<p>${x[2]}</p>`:''}${x[3]&&P[x[3]]?`<p><a href="#map-s" data-fly="${x[3]}">На карте</a> · <a href="${navUrl(P[x[3]].c)}" target="_blank" rel="noopener">Маршрут</a></p>`:''}</li>`).join('') + `</ol></div>`;
+  if (d.id===2) html += `<div class="note">Если прокаты в Каменюках закрыты на сезон, возьмите велосипеды в домике (7 BYN/час). На своём велосипеде въезд на маршруты стоит 15 BYN взрослый / 10 BYN ребёнок 7–14 лет.</div>`;
+  if (d.id===3) html += `<div class="note">Хотите вернуться раньше — оставьте только крепость или только ж/д музей.</div>`;
+  $('#daybody').innerHTML = html;
+  $('#daybody').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{plan=b.dataset.p;store.set('plan',plan);renderDay();renderToday();});
+  bindFly($('#daybody'));
+}
+
+// today card
+function renderToday(){
+  const now = new Date(Date.now()+3*36e5); const ds = now.toISOString().slice(0,10); const hm = now.toISOString().slice(11,16);
+  const d = DAYS.find(x=>x.date===ds); const el = $('#today');
+  if (!d){
+    const before = new Date() < TRIP_START;
+    el.innerHTML = before ? `<span class="tag warn">Скоро</span><h3 style="margin-top:8px">Первая точка — выезд из Лиды 3 ноября в 08:30</h3><p style="color:var(--muted)">В дни поездки здесь будет текущий и следующий пункт плана.</p>`
+                          : `<span class="tag">Готово</span><h3 style="margin-top:8px">Поездка завершена</h3>`;
+    return;
+  }
+  const it = dayItems(d); let i = it.findIndex(x=>x[0]>hm); const next = i===-1?null:it[i]; const cur = i===-1?it[it.length-1]:it[Math.max(0,i-1)];
+  el.innerHTML = `<span class="tag ok">Сегодня · день ${d.id}</span><h3 style="margin-top:8px">Сейчас: ${cur[1]}</h3>${next?`<p style="color:var(--muted)">Дальше в ${next[0]} — ${next[1]}</p>`:''}`;
+  curDay = d.id;
+}
+
+// weather
+async function loadWeather(){
+  const box = $('#weather');
+  box.innerHTML = DAYS.map(d=>`<div class="card wday"><small>${d.short}</small><b>…</b><small>загрузка</small></div>`).join('');
+  try{
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.57&longitude=23.80&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&timezone=Europe%2FMinsk&start_date=2026-11-03&end_date=2026-11-05');
+    if(!r.ok) throw 0; const j = await r.json();
+    const ico = c => c===0?'Ясно':c<=3?'Облачно':c<=48?'Туман':c<=67?'Дождь':c<=77?'Снег':c<=82?'Ливень':'Гроза';
+    box.innerHTML = j.daily.time.map((t,i)=>`<div class="card wday"><small>${DAYS[i].short}</small><b>${Math.round(j.daily.temperature_2m_min[i])}…${Math.round(j.daily.temperature_2m_max[i])}°</b><small>${ico(j.daily.weathercode[i])} · осадки ${j.daily.precipitation_probability_max[i]??'–'}%</small></div>`).join('');
+  }catch(e){
+    box.innerHTML = DAYS.map(d=>`<div class="card wday"><small>${d.short}</small><b>—</b><small>прогноз появится ближе к датам</small></div>`).join('');
+  }
+}
+
+// map
+let map, markers = {}, lines = [], activeCat = 'all';
+function pinIcon(cat){ const [,col,ch] = CATS[cat]; return L.divIcon({className:'',html:`<div class="pin" style="background:${col}"><span>${ch}</span></div>`,iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-24]}); }
+function initMap(){
+  if (typeof L==='undefined'){ $('#map').innerHTML='<p style="padding:20px">Карта не загрузилась: нет интернета.</p>'; return; }
+  map = L.map('map',{scrollWheelZoom:false}).setView([52.40,23.75],9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
+  PLACES.forEach(p=>{
+    markers[p.id] = L.marker(p.c,{icon:pinIcon(p.cat)}).bindPopup(`<b>${p.n}</b>${p.d}<br><a href="${navUrl(p.c)}" target="_blank" rel="noopener">Яндекс</a> · <a href="${gUrl(p.c)}" target="_blank" rel="noopener">Google</a>${p.url?` · <a href="${p.url}" target="_blank" rel="noopener">Сайт</a>`:''}`).addTo(map);
+  });
+  const dayColors = ['#c9822b','#2f7d52','#8a3b3b'];
+  DAYS.forEach((d,i)=>{
+    const ids = [...new Set((d.plans?d.plans.A.items:d.items).map(x=>x[3]).filter(Boolean))];
+    if (d.id===1) ids.unshift('veza'); 
+    const pts = [...new Set(ids)].map(id=>P[id].c);
+    if (pts.length>1) lines.push(L.polyline(pts,{color:dayColors[i],weight:3,opacity:.7,dashArray:'6 6'}).addTo(map));
+  });
+  fitAll();
+}
+function fitAll(){ const vis = PLACES.filter(p=>activeCat==='all'||(activeCat.startsWith('d')?p.day.includes(+activeCat.slice(1)):p.cat===activeCat)); if(vis.length) map.fitBounds(L.latLngBounds(vis.map(p=>p.c)),{padding:[40,40],maxZoom:13}); }
+function renderFilters(){
+  const opts = [['all','Все'],['d1','День 1'],['d2','День 2'],['d3','День 3'],...Object.entries(CATS).map(([k,v])=>[k,v[0]])];
+  $('#filters').innerHTML = opts.map(([k,l])=>`<button data-f="${k}" aria-pressed="${activeCat===k}">${l}</button>`).join('');
+  $('#filters').querySelectorAll('button').forEach(b=>b.onclick=()=>{activeCat=b.dataset.f;renderFilters();applyFilter();});
+}
+function applyFilter(){
+  if(!map) return;
+  PLACES.forEach(p=>{ const show = activeCat==='all'||(activeCat.startsWith('d')?p.day.includes(+activeCat.slice(1)):p.cat===activeCat); show?markers[p.id].addTo(map):markers[p.id].remove(); });
+  lines.forEach(l=> activeCat==='all'||activeCat.startsWith('d') ? l.addTo(map) : l.remove());
+  fitAll();
+}
+function flyTo(id){ if(!map||!P[id]) return; activeCat='all'; renderFilters(); applyFilter(); setTimeout(()=>{ map.setView(P[id].c,14); markers[id].openPopup(); },350); }
+function focusDay(n){ if(!map) return; activeCat='d'+n; renderFilters(); applyFilter(); }
+function bindFly(root){ root.querySelectorAll('[data-fly]').forEach(a=>a.addEventListener('click',()=>flyTo(a.dataset.fly))); }
+
+// routes
+function renderRoutes(){
+  const pick = store.get('route','great');
+  $('#routes').innerHTML = ROUTES.map(r=>`<div class="card route ${pick===r.id?'pick':''}"><span class="tag ${r.lvl[1]}">${r.lvl[0]}</span><h3>${r.n}</h3><div class="meta"><span>${r.km} км</span><span>${r.h}</span></div><p style="color:var(--muted);font-size:.93rem">${r.d}</p><p style="margin:10px 0;font-size:.93rem"><b>Ребёнку 7 лет:</b> ${r.kid}</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ${pick===r.id?'':'ghost'}" data-r="${r.id}">${pick===r.id?'Выбран':'Выбрать'}</button><a class="btn ghost" href="${r.src}" target="_blank" rel="noopener">Описание</a></div></div>`).join('');
+  $('#routes').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{store.set('route',b.dataset.r);renderRoutes();});
+}
+
+// nearby
+function renderNearby(){
+  $('#nearby').innerHTML = NEARBY.map(n=>`<div class="card"><span class="tag">${n[1]}</span><h3 style="font-size:1rem;margin:8px 0 4px">${n[0]}</h3><p style="color:var(--muted);font-size:.93rem">${n[2]}</p>${P[n[3]]?`<p style="margin-top:8px;font-size:.9rem"><a href="#map-s" data-fly="${n[3]}">На карте</a> · <a href="${navUrl(P[n[3]].c)}" target="_blank" rel="noopener">Маршрут</a></p>`:''}</div>`).join('');
+  bindFly($('#nearby'));
+}
+
+// budget
+function renderBudget(){
+  const fact = store.get('fact',{});
+  $('#btable').innerHTML = BUDGET.map((b,i)=>`<tr><td>${b[0]}</td><td class="num">${b[1]||'уточнить'}</td><td class="num"><input inputmode="decimal" aria-label="Факт: ${b[0]}" data-i="${i}" value="${fact[i]??''}" placeholder="0"></td></tr>`).join('');
+  const sum = () => { const f = store.get('fact',{}); $('#bplan').textContent = BUDGET.reduce((s,b)=>s+b[1],0); $('#bfact').textContent = Object.values(f).reduce((s,v)=>s+(parseFloat(String(v).replace(',','.'))||0),0).toFixed(0); };
+  $('#btable').querySelectorAll('input').forEach(inp=>inp.oninput=()=>{const f=store.get('fact',{}); f[inp.dataset.i]=inp.value; store.set('fact',f); sum();});
+  sum();
+}
+
+// checklist
+function renderCheck(){
+  const st = store.get('check',{});
+  $('#clist').innerHTML = CHECK.map((c,i)=>`<label><input type="checkbox" data-i="${i}" ${st[i]?'checked':''}><span>${c}</span></label>`).join('');
+  const prog = () => { const s=store.get('check',{}); const n=Object.values(s).filter(Boolean).length; $('#prog').style.width = (n/CHECK.length*100)+'%'; };
+  $('#clist').querySelectorAll('input').forEach(cb=>cb.onchange=()=>{const s=store.get('check',{}); s[cb.dataset.i]=cb.checked; store.set('check',s); prog();});
+  prog();
+}
+
+// contacts
+function renderContacts(){
+  $('#clinks').innerHTML = CONTACTS.map(c=>`<div class="contact"><div><b>${c[0]}</b><small>${c[1]} · ${c[2].replace(/^\+375(\d{2,3})(\d{3})(\d{2})(\d{2,3})$/,'+375 $1 $2-$3-$4')}</small></div><div style="display:flex;gap:6px"><a class="btn" href="tel:${c[2]}">Позвонить</a><a class="btn ghost" href="viber://chat?number=${encodeURIComponent(c[2])}">Viber</a></div></div>`).join('');
+}
+
+// search
+function initSearch(){
+  const idx = [];
+  DAYS.forEach(d=>{ const all = d.plans?[...d.plans.A.items.map(x=>[...x,'A']),...d.plans.B.items.map(x=>[...x,'B'])]:d.items; all.forEach((x,i)=>idx.push({t:x[1],s:`День ${d.id} · ${x[0]}${x[4]?' · план '+x[4]:''}`,txt:(x[1]+' '+x[2]).toLowerCase(),go:()=>{curDay=d.id; if(x[4]){plan=x[4];store.set('plan',plan)} renderTabs();renderDay(); const items=dayItems(d); const j=items.findIndex(y=>y[1]===x[1]); const el=document.getElementById(`it-${d.id}-${j}`); if(el){el.scrollIntoView({block:'center'});el.classList.add('hl');setTimeout(()=>el.classList.remove('hl'),1600);} }})); });
+  PLACES.forEach(p=>idx.push({t:p.n,s:'Место на карте',txt:(p.n+' '+p.d).toLowerCase(),go:()=>{document.getElementById('map-s').scrollIntoView();flyTo(p.id);}}));
+  ROUTES.forEach(r=>idx.push({t:r.n,s:`Веломаршрут · ${r.km} км`,txt:(r.n+' '+r.d+' велосипед вело').toLowerCase(),go:()=>document.getElementById('bike').scrollIntoView()}));
+  CHECK.forEach(c=>idx.push({t:c,s:'Чек-лист',txt:c.toLowerCase(),go:()=>document.getElementById('check').scrollIntoView()}));
+  CONTACTS.forEach(c=>idx.push({t:c[0],s:'Контакт · '+c[2],txt:(c[0]+' '+c[1]+' телефон').toLowerCase(),go:()=>document.getElementById('contacts').scrollIntoView()}));
+  const q=$('#q'), res=$('#results');
+  q.oninput=()=>{ const v=q.value.trim().toLowerCase(); if(v.length<2){res.classList.remove('show');return;}
+    const words=v.split(/\s+/); const hits=idx.filter(x=>words.every(w=>x.txt.includes(w))).slice(0,12);
+    res.innerHTML = hits.length?hits.map((h,i)=>`<button data-i="${idx.indexOf(h)}"><b>${h.t}</b><small>${h.s}</small></button>`).join(''):'<button disabled><small>Ничего не найдено</small></button>';
+    res.classList.add('show');
+    res.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{idx[+b.dataset.i].go();res.classList.remove('show');q.value='';});
+  };
+  document.addEventListener('click',e=>{ if(!e.target.closest('.search')) res.classList.remove('show'); });
+}
+
+renderToday(); renderTabs(); renderDay(); loadWeather(); renderFilters(); initMap(); renderRoutes(); renderNearby(); renderBudget(); renderCheck(); renderContacts(); initSearch();
+</script>
+</body>
+</html>
