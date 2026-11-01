@@ -6,6 +6,8 @@
 <title>Беловежская пуща + Брест · 3–5 ноября 2026</title>
 <meta name="description" content="Семейный план поездки: Каменецкая вежа, Беловежская пуща на велосипедах, Брестская крепость.">
 <meta name="theme-color" content="#1f3a2c">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3 6 27h20z' fill='%232f5d43'/%3E%3Cpath d='M16 13l-5 14h10z' fill='%23e0a34a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -149,6 +151,9 @@ tfoot td{font-weight:700}
 .contact small{color:var(--muted);display:block}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;background:var(--forest);color:#fff;text-decoration:none;font-weight:600;font-size:.9rem;white-space:nowrap;border:0}
 .btn.ghost{background:var(--surface-2);color:var(--text)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.tools .msg{font-size:.9rem;color:var(--muted)}
+.you{width:16px;height:16px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 2px #2563eb}
 
 footer{background:var(--forest-d);color:#cdd8d0;padding:30px 0;font-size:.9rem}
 footer a{color:#f0c98a}
@@ -225,6 +230,11 @@ footer a{color:#f0c98a}
   <p class="sub">Нажмите на точку, чтобы открыть её в навигаторе. Координаты части мест примерные.</p>
   <div class="filters" id="filters"></div>
   <div id="map" role="region" aria-label="Карта поездки"></div>
+  <div class="tools">
+    <button class="btn" id="locate" type="button">Где я</button>
+    <button class="btn ghost" id="offmap" type="button">Карта офлайн</button>
+    <span class="msg" id="locmsg" role="status" aria-live="polite"></span>
+  </div>
 </section>
 
 <section class="wrap" id="bike">
@@ -250,6 +260,11 @@ footer a{color:#f0c98a}
       <tfoot><tr><td>Итого</td><td class="num" id="bplan"></td><td class="num" id="bfact"></td></tr></tfoot>
     </table>
   </div>
+  <div class="tools">
+    <button class="btn ghost" type="button" data-export="fact">Экспорт JSON</button>
+    <button class="btn ghost" type="button" data-import>Импорт JSON</button>
+    <span class="msg" data-iomsg role="status" aria-live="polite"></span>
+  </div>
 </section>
 
 <section class="wrap" id="check">
@@ -258,6 +273,11 @@ footer a{color:#f0c98a}
   <div class="card check">
     <div class="progress"><i id="prog"></i></div>
     <div id="clist"></div>
+  </div>
+  <div class="tools">
+    <button class="btn ghost" type="button" data-export="check">Экспорт JSON</button>
+    <button class="btn ghost" type="button" data-import>Импорт JSON</button>
+    <span class="msg" data-iomsg role="status" aria-live="polite"></span>
   </div>
 </section>
 
@@ -283,6 +303,7 @@ footer a{color:#f0c98a}
   <a href="#check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 12 5 5L20 6"/></svg>Чек-лист</a>
 </nav>
 
+<input type="file" id="importfile" accept="application/json,.json" hidden>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ================== ДАННЫЕ (правьте здесь) ================== */
@@ -290,18 +311,18 @@ const TRIP_START = new Date('2026-11-03T08:30:00+03:00');
 const PLACES = [
   {id:'home', n:'Forest Soul A-frame', d:'Ваш домик: д. Внучки, 4. Купель, камин, проектор, мангал.', c:[52.4822,23.7410], cat:'home', day:[1,2,3], url:'https://belbooking.by/top/brest/kottedz/forest-soul-afreim'},
   {id:'smuga', n:'Озеро Смуга', d:'Маленькое лесное озеро на северной окраине Внучек.', c:[52.4855,23.7395], cat:'nature', day:[1]},
-  {id:'veza', n:'Каменецкая вежа', d:'Башня XIII века, 5 ярусов музея. С 1.11: 10:00–18:00, вход до 17:30, пн выходной.', c:[52.4006,23.8128], cat:'museum', day:[1]},
+  {id:'veza', n:'Каменецкая вежа', d:'Башня XIII века, 5 ярусов музея. С 1.11: 10:00–18:00, вход до 17:30, пн выходной.', c:[52.40476,23.81946], cat:'museum', day:[1]},
   {id:'gate', n:'Главный вход и кассы НП', d:'Каменюки. Касса справа от ворот, здесь же стартуют веломаршруты.', c:[52.5733,23.8045], cat:'bike', day:[2]},
   {id:'museum', n:'Музей природы', d:'9:00–18:00. 14 / 9 BYN.', c:[52.5725,23.8016], cat:'museum', day:[2]},
   {id:'zoo', n:'Экскурсионные вольеры', d:'Зубры, олени, волки, медведь, орлан. 9:00–18:00, лучше до 16:00. 14 / 9 BYN.', c:[52.5722,23.7999], cat:'nature', day:[2]},
   {id:'frost', n:'Поместье Деда Мороза', d:'10:00–18:00, пн выходной. 40 / 30 BYN. Автобусы 11:00, 13:30, 16:00 при группе от 10 человек.', c:[52.6170,23.8950], cat:'nature', day:[2]},
   {id:'archeo', n:'Археологический музей под открытым небом', d:'800 м от касс. 10:00–18:00.', c:[52.5705,23.8085], cat:'museum', day:[2]},
-  {id:'velohub', n:'Прокат ВелоХаб', d:'Каменюки, Каменюкская, 3. 800 м от входа. +375 33 605-33-33.', c:[52.5690,23.8110], cat:'bike', day:[2]},
-  {id:'fortress', n:'Брестская крепость', d:'Территория 8:00–24:00, бесплатно. Музей обороны 9:00–18:00, 12 / 6 BYN. 1–8 ноября без выходных.', c:[52.0832,23.6610], cat:'museum', day:[3]},
-  {id:'rail', n:'Музей железнодорожной техники', d:'пр-т Машерова, 2. Окт–апр 10:00–19:00, касса до 18:30, выходные пн и вт.', c:[52.0905,23.6680], cat:'museum', day:[3]},
-  {id:'sovet', n:'Советская улица', d:'Пешеходная улица Бреста: ужин, прогулка, вечерние фонари.', c:[52.0915,23.6895], cat:'food', day:[3]},
+  {id:'velohub', n:'Прокат ВелоХаб', d:'Каменюки, Каменюкская, 3. 800 м от входа. +375 33 605-33-33.', c:[52.56100,23.79984], cat:'bike', day:[2]},
+  {id:'fortress', n:'Брестская крепость', d:'Территория 8:00–24:00, бесплатно. Музей обороны 9:00–18:00, 12 / 6 BYN. 1–8 ноября без выходных.', c:[52.08266,23.65545], cat:'museum', day:[3]},
+  {id:'rail', n:'Музей железнодорожной техники', d:'пр-т Машерова, 2. Окт–апр 10:00–19:00, касса до 18:30, выходные пн и вт.', c:[52.08566,23.67219], cat:'museum', day:[3]},
+  {id:'sovet', n:'Советская улица', d:'Пешеходная улица Бреста: ужин, прогулка, вечерние фонари.', c:[52.09434,23.69162], cat:'food', day:[3]},
   {id:'volchin', n:'Троицкий костёл, Волчин', d:'Барочный костёл 1733 года необычной формы.', c:[52.3125,23.5750], cat:'extra', day:[]},
-  {id:'vysokoe', n:'Высокое: руины замка Сапегов', d:'Остатки дворцово-паркового ансамбля.', c:[52.3700,23.3790], cat:'extra', day:[]},
+  {id:'vysokoe', n:'Высокое: руины замка Сапегов', d:'Остатки дворцово-паркового ансамбля.', c:[52.36690,23.37831], cat:'extra', day:[]},
 ];
 const CATS = {home:['Жильё','#c9822b','⌂'], nature:['Природа','#2f7d52','✿'], museum:['Музеи','#3d5a80','M'], bike:['Велосипеды','#5c4b8a','B'], food:['Еда, прогулка','#8a3b3b','●'], extra:['Дополнительно','#6b7280','+']};
 
@@ -473,7 +494,7 @@ function pinIcon(cat){ const [,col,ch] = CATS[cat]; return L.divIcon({className:
 function initMap(){
   if (typeof L==='undefined'){ $('#map').innerHTML='<p style="padding:20px">Карта не загрузилась: нет интернета.</p>'; return; }
   map = L.map('map',{scrollWheelZoom:false}).setView([52.40,23.75],9);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
   PLACES.forEach(p=>{
     markers[p.id] = L.marker(p.c,{icon:pinIcon(p.cat)}).bindPopup(`<b>${p.n}</b>${p.d}<br><a href="${navUrl(p.c)}" target="_blank" rel="noopener">Яндекс</a> · <a href="${gUrl(p.c)}" target="_blank" rel="noopener">Google</a>${p.url?` · <a href="${p.url}" target="_blank" rel="noopener">Сайт</a>`:''}`).addTo(map);
   });
@@ -555,6 +576,70 @@ function initSearch(){
   };
   document.addEventListener('click',e=>{ if(!e.target.closest('.search')) res.classList.remove('show'); });
 }
+
+// geolocation
+function distFmt(m){ return m<1000?Math.round(m)+' м':(m/1000).toFixed(1).replace('.',',')+' км'; }
+let youMarker;
+function locate(){
+  const msg=$('#locmsg');
+  if(!navigator.geolocation){ msg.textContent='Геолокация не поддерживается.'; return; }
+  msg.textContent='Определяю положение…';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const ll=[pos.coords.latitude,pos.coords.longitude];
+    let best=null,bd=Infinity;
+    PLACES.forEach(p=>{ const d=L.latLng(ll).distanceTo(L.latLng(p.c)); if(d<bd){bd=d;best=p;} });
+    msg.textContent=`Ближайшая точка: ${best.n}, ${distFmt(bd)} по прямой (точность ±${Math.round(pos.coords.accuracy)} м).`;
+    if(map){
+      if(youMarker) youMarker.setLatLng(ll); else youMarker=L.marker(ll,{icon:L.divIcon({className:'',html:'<div class="you"></div>',iconSize:[16,16]}),keyboard:false}).addTo(map);
+      map.fitBounds(L.latLngBounds([ll,best.c]),{padding:[40,40],maxZoom:15});
+    }
+  },err=>{ msg.textContent = err.code===1?'Доступ к геолокации запрещён.':'Не удалось определить положение.'; },{enableHighAccuracy:true,timeout:20000,maximumAge:30000});
+}
+$('#locate').onclick=locate;
+
+// offline tiles
+function tileList(){
+  const set=new Set(), pts=PLACES.filter(p=>p.day.length).map(p=>p.c);
+  const add=(z,lat,lon,r)=>{
+    const n=2**z, x=(lon+180)/360*n, la=lat*Math.PI/180, y=(1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*n;
+    const tr=r/(40075016*Math.cos(la)/n);
+    for(let i=Math.floor(x-tr);i<=Math.floor(x+tr);i++) for(let j=Math.floor(y-tr);j<=Math.floor(y+tr);j++) set.add(`${z}/${i}/${j}`);
+  };
+  pts.forEach(c=>{ for(let z=9;z<=15;z++) add(z,c[0],c[1],z>=15?1500:z>=13?3000:6000); });
+  return [...set].map(k=>`https://tile.openstreetmap.org/${k}.png`);
+}
+$('#offmap').onclick=async()=>{
+  const msg=$('#locmsg'), reg=await (navigator.serviceWorker&&navigator.serviceWorker.ready);
+  if(!reg){ msg.textContent='Офлайн-режим не поддерживается.'; return; }
+  const urls=tileList(); msg.textContent=`Загрузка тайлов: 0 / ${urls.length}`;
+  const onMsg=e=>{ if(e.data&&e.data.type==='tiles'){ msg.textContent=e.data.done<e.data.total?`Загрузка тайлов: ${e.data.done} / ${e.data.total}`:`Карта сохранена офлайн (${e.data.total-e.data.failed} тайлов${e.data.failed?', ошибок: '+e.data.failed:''}).`; if(e.data.done>=e.data.total) navigator.serviceWorker.removeEventListener('message',onMsg); } };
+  navigator.serviceWorker.addEventListener('message',onMsg);
+  reg.active.postMessage({type:'cache-tiles',urls});
+};
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{}));
+
+// export / import
+function ioMsg(t){ document.querySelectorAll('[data-iomsg]').forEach(e=>e.textContent=t); }
+document.querySelectorAll('[data-export]').forEach(b=>b.onclick=()=>{
+  const key=b.dataset.export, data={app:'pushcha-trip',version:1,exported:new Date().toISOString(),[key]:store.get(key,{})};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download=`trip-${key==='fact'?'budget':'checklist'}.json`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  ioMsg('Файл сохранён.');
+});
+document.querySelectorAll('[data-import]').forEach(b=>b.onclick=()=>$('#importfile').click());
+$('#importfile').onchange=async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  try{
+    const d=JSON.parse(await f.text()); if(!d||d.app!=='pushcha-trip') throw 0;
+    const isObj=o=>o&&typeof o==='object'&&!Array.isArray(o);
+    let n=0;
+    if(isObj(d.fact)){ const o={}; Object.entries(d.fact).forEach(([k,v])=>{ if(+k>=0&&+k<BUDGET.length&&(typeof v==='string'||typeof v==='number')) o[k]=String(v); }); store.set('fact',o); n++; }
+    if(isObj(d.check)){ const o={}; Object.entries(d.check).forEach(([k,v])=>{ if(+k>=0&&+k<CHECK.length) o[k]=!!v; }); store.set('check',o); n++; }
+    if(!n) throw 0;
+    renderBudget(); renderCheck(); ioMsg('Данные импортированы.');
+  }catch{ ioMsg('Не удалось прочитать файл: нужен JSON, экспортированный из этой страницы.'); }
+};
 
 renderToday(); renderTabs(); renderDay(); loadWeather(); renderFilters(); initMap(); renderRoutes(); renderNearby(); renderBudget(); renderCheck(); renderContacts(); initSearch();
 </script>
