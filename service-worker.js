@@ -1,5 +1,6 @@
-const VERSION = 'v1';
-const APP = 'app-' + VERSION, TILES = 'tiles-' + VERSION, EXT = 'ext-' + VERSION;
+const VERSION = 'v2';
+// Тайлы не зависят от версии, чтобы скачанная карта не пропадала при обновлении
+const APP = 'app-' + VERSION, TILES = 'tiles-v1', EXT = 'ext-' + VERSION;
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 const EXTERNAL = [
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
@@ -44,7 +45,7 @@ self.addEventListener('fetch', e => {
     e.respondWith(cacheFirst(req, TILES));
   } else if (url.origin === location.origin) {
     e.respondWith(networkFirst(req));
-  } else if (/unpkg\.com|fonts\.googleapis\.com|fonts\.gstatic\.com/.test(url.hostname)) {
+  } else if (/unpkg\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|thumb\.wikimedia\.org/.test(url.hostname)) {
     e.respondWith(cacheFirst(req, EXT));
   }
 });

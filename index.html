@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Беловежская пуща + Брест · 3–5 ноября 2026</title>
+<title>Беловежская пуща + Брест · 4–6 ноября 2026</title>
 <meta name="description" content="Семейный план поездки: Каменецкая вежа, Беловежская пуща на велосипедах, Брестская крепость.">
 <meta name="theme-color" content="#1f3a2c">
 <link rel="manifest" href="manifest.json">
@@ -18,7 +18,7 @@
   --bg:#f4f1ea; --surface:#fffdf8; --surface-2:#ece7dc; --border:#ddd5c5;
   --text:#1d2a22; --muted:#5d6b62; --faint:#8a948d;
   --forest:#2f5d43; --forest-d:#1f3a2c; --amber:#c9822b; --amber-l:#f3dfc0;
-  --d1:#c9822b; --d2:#2f7d52; --d3:#8a3b3b;
+  --d1:#c9822b; --d2:#2f7d52; --d3:#8a3b3b; --d4:#3d5a80;
   --radius:16px; --shadow:0 1px 2px rgba(30,40,30,.06),0 6px 20px rgba(30,40,30,.06);
   --font:'Onest',system-ui,sans-serif; --display:'Unbounded','Onest',sans-serif;
 }
@@ -26,7 +26,7 @@
   --bg:#121814; --surface:#1a221d; --surface-2:#222c26; --border:#2e3a32;
   --text:#e8ede9; --muted:#a3b0a7; --faint:#77857c;
   --forest:#6fb08a; --forest-d:#0d1410; --amber:#e8a957; --amber-l:#3a2e1d;
-  --d1:#e8a957; --d2:#5fbf86; --d3:#d97b7b;
+  --d1:#e8a957; --d2:#5fbf86; --d3:#d97b7b; --d4:#8fb0d9;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -83,7 +83,17 @@ section+section{border-top:1px solid var(--border)}
 .tag.bad{background:color-mix(in srgb,var(--d3) 18%,transparent);color:var(--d3)}
 
 /* weather */
-.weather{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.weather{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+@media(max-width:560px){.weather{grid-template-columns:repeat(2,1fr)}}
+.prow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 10px;-webkit-overflow-scrolling:touch}
+.pcard{flex:0 0 200px;scroll-snap-align:start;display:flex;gap:10px;align-items:center;padding:10px}
+.pcard .th{flex:0 0 56px;height:56px;border-radius:10px;overflow:hidden;background:color-mix(in srgb,var(--forest) 14%,transparent);display:grid;place-items:center;color:var(--forest);font-weight:700}
+.pcard .th img{width:100%;height:100%;object-fit:cover;display:block}
+.pcard b{display:block;font-size:.88rem;line-height:1.25;margin-bottom:3px}
+.pcard a{font-size:.8rem;margin-right:8px;white-space:nowrap}
+.popimg{display:block;width:100%;height:110px;object-fit:cover;border-radius:8px;margin:6px 0}
+.hotel h3{font-size:1.02rem;margin:8px 0 4px}
+.hotel .price{font-weight:600;margin:4px 0 8px}
 .wday{text-align:center;padding:14px 8px}
 .wday b{font-family:var(--display);font-size:1.3rem;display:block;margin:4px 0}
 .wday small{color:var(--muted)}
@@ -93,7 +103,8 @@ section+section{border-top:1px solid var(--border)}
 .today h3{font-size:1.05rem;margin-bottom:4px}
 
 /* days */
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+@media(max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)}}
 .tab{border:1px solid var(--border);background:var(--surface);padding:10px 16px;border-radius:12px;text-align:left;min-width:0}
 .tab b{display:block;font-size:.95rem}
 .tab small{color:var(--muted)}
@@ -173,10 +184,10 @@ footer a{color:#f0c98a}
   <div class="wrap">
     <a class="brand" href="#top" aria-label="В начало">
       <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 6 27h20z" fill="var(--forest)"/><path d="M16 13l-5 14h10z" fill="var(--amber)"/></svg>
-      Пуща · 3–5.11
+      Пуща · 4–6.11
     </a>
     <nav class="nav" aria-label="Разделы">
-      <a href="#days">Маршрут</a><a href="#map-s">Карта</a><a href="#bike">Велосипеды</a><a href="#near">Рядом</a><a href="#budget">Бюджет</a><a href="#check">Чек-лист</a><a href="#contacts">Контакты</a>
+      <a href="#days">Маршрут</a><a href="#map-s">Карта</a><a href="#bike">Велосипеды</a><a href="#near">Рядом</a><a href="#sleep">Ночёвка</a><a href="#budget">Бюджет</a><a href="#check">Чек-лист</a><a href="#contacts">Контакты</a>
     </nav>
     <button class="iconbtn" id="theme" aria-label="Сменить тему">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -200,7 +211,7 @@ footer a{color:#f0c98a}
     <h1>Беловежская пуща и&nbsp;Брест</h1>
     <p>Треугольный домик у леса, купель под звёздами, велосипеды среди вековых дубов, зубры, Дед Мороз и Брестская крепость.</p>
     <div class="chips">
-      <span class="chip">3–5 ноября</span><span class="chip">2 взрослых + дети 7 и 10 лет</span><span class="chip">Forest Soul A-frame, д. Внучки</span><span class="chip">~600 км на машине</span>
+      <span class="chip">4–6 ноября (+7, если останемся в Бресте)</span><span class="chip">2 взрослых + дети 7 и 10 лет</span><span class="chip">Forest Soul A-frame, д. Внучки</span><span class="chip">~600 км на машине</span>
     </div>
     <div class="countdown" id="countdown"></div>
   </div>
@@ -220,7 +231,7 @@ footer a{color:#f0c98a}
 
 <section class="wrap" id="days">
   <h2>Маршрут по дням</h2>
-  <p class="sub">Вторник, среда, четверг: в эти дни все нужные места открыты. Время примерное, ориентир — закат около 16:30.</p>
+  <p class="sub">Среда, четверг, пятница, а при ночёвке в Бресте ещё суббота 7.11 (праздник). Все нужные места в эти дни открыты. Время примерное, ориентир — закат около 17:50.</p>
   <div class="tabs" role="tablist" id="tabs"></div>
   <div id="daybody"></div>
 </section>
@@ -237,6 +248,12 @@ footer a{color:#f0c98a}
   </div>
 </section>
 
+<section class="wrap" id="photos-s">
+  <h2>Фото и отзывы</h2>
+  <p class="sub">Листайте вбок. «Фото и отзывы» открывает карточку места в Яндекс Картах, «Обзор» — статью или официальный сайт.</p>
+  <div class="prow" id="photos"></div>
+</section>
+
 <section class="wrap" id="bike">
   <h2>Веломаршруты пущи</h2>
   <p class="sub">Старт у главного входа в Каменюках. Нажмите «Выбрать», и маршрут подсветится. Выбор сохраняется.</p>
@@ -250,9 +267,15 @@ footer a{color:#f0c98a}
   <div class="grid g3" id="nearby"></div>
 </section>
 
+<section class="wrap" id="sleep">
+  <h2>Ночёвка в Бресте</h2>
+  <p class="sub">Если 6.11 решите остаться. 7.11 — праздник, плюс школьные каникулы, так что звоните и бронируйте заранее. Наличие номеров на эти даты не проверено.</p>
+  <div class="grid g2" id="hotels"></div>
+</section>
+
 <section class="wrap" id="budget">
   <h2>Бюджет на месте</h2>
-  <p class="sub">Без жилья. Вписывайте фактические траты, они сохраняются на этом устройстве.</p>
+  <p class="sub">Без оплаты домика. Вписывайте фактические траты, они сохраняются на этом устройстве.</p>
   <div class="card tablewrap">
     <table>
       <thead><tr><th>Статья</th><th class="num">План, BYN</th><th class="num">Факт, BYN</th></tr></thead>
@@ -290,8 +313,8 @@ footer a{color:#f0c98a}
 
 <footer>
   <div class="wrap">
-    Беловежская пуща + Брест · 3–5 ноября 2026 · 4 человека.<br>
-    Источники: <a href="https://npbp.by/contacts/vremya-raboty-obektov/">npbp.by</a>, <a href="https://www.brest-fortress.by/">brest-fortress.by</a>, <a href="https://www.rw.by/corporate/history/museums.php">rw.by</a>, <a href="https://vb.by/gazeta/priglasitelnyj-bilet/s-1-noyabrya-brestskie-muzei-menyayut-grafik-raboty.html">vb.by</a>, <a href="https://belbooking.by/top/brest/kottedz/forest-soul-afreim">belbooking.by</a>. Цены и часы перед выездом лучше перепроверить.
+    Беловежская пуща + Брест · 4–6 ноября 2026 · 4 человека.<br>
+    Источники: <a href="https://npbp.by/contacts/vremya-raboty-obektov/">npbp.by</a>, <a href="https://www.brest-fortress.by/">brest-fortress.by</a>, <a href="https://www.rw.by/corporate/history/museums.php">rw.by</a>, <a href="https://vb.by/gazeta/priglasitelnyj-bilet/s-1-noyabrya-brestskie-muzei-menyayut-grafik-raboty.html">vb.by</a>, <a href="https://belbooking.by/top/brest/kottedz/forest-soul-afreim">belbooking.by</a>, <a href="https://vb.by/gazeta/priglasitelnyj-bilet/s-1-noyabrya-brestskie-muzei-menyayut-grafik-raboty.html">Берестье</a>, <a href="https://brest.popugainya.by/">Попугайня</a>, <a href="https://welcome.by/hotels/brest/gogol">welcome.by</a>. Фото: Wikimedia Commons. Цены и часы перед выездом лучше перепроверить.
   </div>
 </footer>
 
@@ -307,38 +330,52 @@ footer a{color:#f0c98a}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ================== ДАННЫЕ (правьте здесь) ================== */
-const TRIP_START = new Date('2026-11-03T08:30:00+03:00');
+const TRIP_START = new Date('2026-11-04T08:30:00+03:00');
+const TRIP_END = new Date('2026-11-08T00:00:00+03:00');
+const WK = 'https://thumb.wikimedia.org/wikipedia/commons/thumb/';
 const PLACES = [
   {id:'home', n:'Forest Soul A-frame', d:'Ваш домик: д. Внучки, 4. Купель, камин, проектор, мангал.', c:[52.4822,23.7410], cat:'home', day:[1,2,3], url:'https://belbooking.by/top/brest/kottedz/forest-soul-afreim'},
   {id:'smuga', n:'Озеро Смуга', d:'Маленькое лесное озеро на северной окраине Внучек.', c:[52.4855,23.7395], cat:'nature', day:[1]},
-  {id:'veza', n:'Каменецкая вежа', d:'Башня XIII века, 5 ярусов музея. С 1.11: 10:00–18:00, вход до 17:30, пн выходной.', c:[52.40476,23.81946], cat:'museum', day:[1]},
-  {id:'gate', n:'Главный вход и кассы НП', d:'Каменюки. Касса справа от ворот, здесь же стартуют веломаршруты.', c:[52.5733,23.8045], cat:'bike', day:[2]},
-  {id:'museum', n:'Музей природы', d:'9:00–18:00. 14 / 9 BYN.', c:[52.5725,23.8016], cat:'museum', day:[2]},
-  {id:'zoo', n:'Экскурсионные вольеры', d:'Зубры, олени, волки, медведь, орлан. 9:00–18:00, лучше до 16:00. 14 / 9 BYN.', c:[52.5722,23.7999], cat:'nature', day:[2]},
-  {id:'frost', n:'Поместье Деда Мороза', d:'10:00–18:00, пн выходной. 40 / 30 BYN. Автобусы 11:00, 13:30, 16:00 при группе от 10 человек.', c:[52.6170,23.8950], cat:'nature', day:[2]},
+  {id:'veza', n:'Каменецкая вежа', d:'Башня XIII века, 5 ярусов музея. С 1.11: 10:00–18:00, вход до 17:30, пн выходной.', c:[52.40476,23.81946], cat:'museum', day:[1], rev:'https://travelbelka.ru/ekskursii/mesta/kameneckaya-vezha/', img:WK+'a/aa/%D0%9A%D0%B0%D0%BC%D1%8F%D0%BD%D0%B5%D1%86%D0%BA%D0%B0%D1%8F_%D0%B2%D0%B5%D0%B6%D0%B0.jpg/330px-%D0%9A%D0%B0%D0%BC%D1%8F%D0%BD%D0%B5%D1%86%D0%BA%D0%B0%D1%8F_%D0%B2%D0%B5%D0%B6%D0%B0.jpg'},
+  {id:'gate', n:'Главный вход и кассы НП', d:'Каменюки. Касса справа от ворот, здесь же стартуют веломаршруты.', c:[52.5733,23.8045], cat:'bike', day:[2], rev:'https://npbp.by/contacts/vremya-raboty-obektov/'},
+  {id:'museum', n:'Музей природы', d:'9:00–18:00. 14 / 9 BYN.', c:[52.5725,23.8016], cat:'museum', day:[2], rev:'https://npbp.by/contacts/vremya-raboty-obektov/'},
+  {id:'zoo', n:'Экскурсионные вольеры', d:'Зубры, олени, волки, медведь, орлан. 9:00–18:00, лучше до 16:00. 14 / 9 BYN.', c:[52.5722,23.7999], cat:'nature', day:[2], rev:'https://npbp.by/contacts/vremya-raboty-obektov/', img:WK+'2/26/Bison_bonasus_%28Linnaeus_1758%29.jpg/330px-Bison_bonasus_%28Linnaeus_1758%29.jpg'},
+  {id:'frost', n:'Поместье Деда Мороза', d:'10:00–18:00, пн выходной. 40 / 30 BYN. Автобусы 11:00, 13:30, 16:00 при группе от 10 человек.', c:[52.6170,23.8950], cat:'nature', day:[2], rev:'https://npbp.by/tours/how-to-visit-the-estate-of-grandfather-frost/'},
   {id:'archeo', n:'Археологический музей под открытым небом', d:'800 м от касс. 10:00–18:00.', c:[52.5705,23.8085], cat:'museum', day:[2]},
-  {id:'velohub', n:'Прокат ВелоХаб', d:'Каменюки, Каменюкская, 3. 800 м от входа. +375 33 605-33-33.', c:[52.56100,23.79984], cat:'bike', day:[2]},
-  {id:'fortress', n:'Брестская крепость', d:'Территория 8:00–24:00, бесплатно. Музей обороны 9:00–18:00, 12 / 6 BYN. 1–8 ноября без выходных.', c:[52.08266,23.65545], cat:'museum', day:[3]},
-  {id:'rail', n:'Музей железнодорожной техники', d:'пр-т Машерова, 2. Окт–апр 10:00–19:00, касса до 18:30, выходные пн и вт.', c:[52.08566,23.67219], cat:'museum', day:[3]},
-  {id:'sovet', n:'Советская улица', d:'Пешеходная улица Бреста: ужин, прогулка, вечерние фонари.', c:[52.09434,23.69162], cat:'food', day:[3]},
-  {id:'volchin', n:'Троицкий костёл, Волчин', d:'Барочный костёл 1733 года необычной формы.', c:[52.3125,23.5750], cat:'extra', day:[]},
-  {id:'vysokoe', n:'Высокое: руины замка Сапегов', d:'Остатки дворцово-паркового ансамбля.', c:[52.36690,23.37831], cat:'extra', day:[]},
+  {id:'velohub', n:'Прокат ВелоХаб', d:'Каменюки, Каменюкская, 3. 800 м от входа. +375 33 605-33-33.', c:[52.56100,23.79984], cat:'bike', day:[2], url:'https://www.velohub.ru/'},
+  {id:'fortress', n:'Брестская крепость', d:'Территория 8:00–24:00, бесплатно. Музей обороны 9:00–18:00, 12 / 6 BYN. 1–8 ноября без выходных.', c:[52.08266,23.65545], cat:'museum', day:[3], url:'https://www.brest-fortress.by/', img:WK+'5/51/Brest_Brest_Fortress_Kholm_Gate_9209_2150.jpg/330px-Brest_Brest_Fortress_Kholm_Gate_9209_2150.jpg', rev:'https://www.belveb.by/blog/travels-970-s/vykhodnye-v-breste-chto-posmotret-gde-gulyat-i-kak-sostavit-marshrut-108783-p/'},
+  {id:'berestye', n:'Музей «Берестье»', d:'Раскопанный город XIII века внутри крепости: срубы, улицы-мостовые. С 1.11: 10:00–18:00, вход до 17:30, без выходных. ~8,45 / 4,15 BYN.', c:[52.08000,23.65462], cat:'museum', day:[3], rev:'https://travelbelka.ru/ekskursii/mesta/berestye/', img:WK+'e/e9/%D0%91%D1%80%D1%8D%D1%81%D1%86%D0%BA%D0%B0%D1%8F_%D0%BA%D1%80%D1%8D%D0%BF%D0%B0%D1%81%D1%86%D1%8C_%D1%83_%D1%87%D1%8D%D1%80%D0%B2%D0%B5%D0%BD%D1%96_2020._%D0%9C%D1%83%D0%B7%D0%B5%D0%B9_%C2%AB%D0%91%D1%8F%D1%80%D1%8D%D1%81%D1%86%D0%B5%C2%BB_%2858%29.jpg/330px-%D0%91%D1%80%D1%8D%D1%81%D1%86%D0%BA%D0%B0%D1%8F_%D0%BA%D1%80%D1%8D%D0%BF%D0%B0%D1%81%D1%86%D1%8C_%D1%83_%D1%87%D1%8D%D1%80%D0%B2%D0%B5%D0%BD%D1%96_2020._%D0%9C%D1%83%D0%B7%D0%B5%D0%B9_%C2%AB%D0%91%D1%8F%D1%80%D1%8D%D1%81%D1%86%D0%B5%C2%BB_%2858%29.jpg'},
+  {id:'basilico', n:'Basilico, пицца из печи', d:'ул. Островского, 2, рядом с Советской. 11:00–23:00. +375 29 108-22-55.', c:[52.08749,23.69371], cat:'food', day:[3], url:'https://basilico.relax.by/'},
+  {id:'embank', n:'Набережная Мухавца', d:'Набережная Франциска Скорины: прогулка от центра почти до крепости.', c:[52.08392,23.70404], cat:'food', day:[3], rev:'https://realt.onliner.by/2026/04/15/chto-posmotret-v-breste-za-dva-dnya-10-idej'},
+  {id:'sovet', n:'Советская улица и фонарщик', d:'Главная пешеходная улица. Каждый вечер на закате (~17:50) фонарщик зажигает керосиновые фонари; время пишут на часах у Машерова.', c:[52.09434,23.69162], cat:'food', day:[3], rev:'https://travelbelka.ru/ekskursii/mesta/brest/', img:WK+'9/99/%D0%A3%D0%BB%D0%B8%D1%86%D0%B0_%D0%A1%D0%BE%D0%B2%D0%B5%D1%82%D1%81%D0%BA%D0%B0%D1%8F_%D0%B2_%D0%91%D1%80%D0%B5%D1%81%D1%82%D0%B5.jpg/330px-%D0%A3%D0%BB%D0%B8%D1%86%D0%B0_%D0%A1%D0%BE%D0%B2%D0%B5%D1%82%D1%81%D0%BA%D0%B0%D1%8F_%D0%B2_%D0%91%D1%80%D0%B5%D1%81%D1%82%D0%B5.jpg'},
+  {id:'gogol', n:'Аллея фонарей, ул. Гоголя', d:'Больше 30 авторских кованых фонарей от городов и предприятий. Красиво с темнотой.', c:[52.09264,23.69232], cat:'food', day:[3], rev:'https://www.tripadvisor.ru/ShowUserReviews-g297308-d6785166-r437096540-Lights_Alley-Brest_Brest_District_Brest_Region.html'},
+  {id:'brasil', n:'Cafés la Brasileña', d:'Тот самый кофе с очередью: ул. Гоголя, 11. Ежедневно 9:00–21:30.', c:[52.09085,23.68483], cat:'food', day:[3,4], rev:'https://brest-gid.ru/guides/gde-poest-v-breste'},
+  {id:'garden', n:'Зимний сад', d:'Оранжерея в центре: тропики, кактусы, пальмы. Пн–пт 10:00–18:00, перерыв 13:30–14:00. Сб–вс и праздники (7.11) закрыт.', c:[52.09811,23.68808], cat:'extra', day:[], rev:'https://travel.by/2025/09/rayskiy-ugolok-v-tsentre-goroda-zimniy-sad-v-breste/'},
+  {id:'rail', n:'Музей железнодорожной техники', d:'пр-т Машерова, 2. Окт–апр 10:00–19:00, касса до 18:30, выходные пн и вт.', c:[52.08566,23.67219], cat:'museum', day:[4], url:'https://www.rw.by/corporate/history/museums.php', img:WK+'b/be/Brest_Railway_Museum_9%D0%9F_14362_Steam_Locomotive_2023-03-05_3201.jpg/330px-Brest_Railway_Museum_9%D0%9F_14362_Steam_Locomotive_2023-03-05_3201.jpg'},
+  {id:'parrot', n:'Попугайня', d:'ул. Фомина, 14. Можно кормить и брать в руки попугаев. Ежедневно 10:00–21:00. Будни до 17:00: 24 BYN, дети до 8 лет 19 BYN; вечером и в выходные дороже.', c:[52.08693,23.67709], cat:'extra', day:[4], url:'https://brest.popugainya.by/'},
+  {id:'fox', n:'VR-клуб «Белый Лис»', d:'ул. Советская, 16. VR-игры от 6 лет, 10:00–21:00.', c:[52.09675,23.68973], cat:'extra', day:[4], rev:'https://mamaland.by/catalog/razvlecheniya/brest'},
+  {id:'kart', n:'Картинг «Альянс»', d:'ул. Октябрьской Революции, 117Б. Открытая трасса, 10:00–19:00. В ноябре позвоните: работает ли в непогоду.', c:[52.0788,23.8146], cat:'extra', day:[], url:'https://alliancebrest.by/uslugi/karting/'},
+  {id:'h_gogol', n:'Мини-отель «Гоголь»', d:'ул. Гоголя, 1Г. Семейный номер TWIN+2, бесплатная парковка. Рядом Попугайня и ж/д музей.', c:[52.08854,23.67618], cat:'sleep', day:[], url:'https://gogol.by/nomera/semejnyj-nomer-twin-2/'},
+  {id:'h_herm', n:'Hermitage 4*', d:'ул. Чкалова, 7. Тихий центр, номера до двухуровневых апартаментов с сауной.', c:[52.09401,23.68111], cat:'sleep', day:[], url:'https://hermitagehotel.by/'},
+  {id:'h_hamp', n:'Hampton by Hilton', d:'Семейный номер (кровать queen + диван), завтрак включён, парковка.', c:[52.07437,23.70806], cat:'sleep', day:[], url:'https://www.hilton.com/en/hotels/luzbbhx-hampton-brest/'},
+  {id:'volchin', n:'Троицкий костёл, Волчин', d:'Барочный костёл 1733 года необычной формы.', c:[52.3125,23.5750], cat:'extra', day:[], img:WK+'3/3e/%D0%9A%D1%80%D0%B0%D1%8F%D0%B2%D1%96%D0%B4%D1%8B_%D0%92%D0%BE%D1%9E%D1%87%D1%8B%D0%BD%D0%B0_09.jpg/330px-%D0%9A%D1%80%D0%B0%D1%8F%D0%B2%D1%96%D0%B4%D1%8B_%D0%92%D0%BE%D1%9E%D1%87%D1%8B%D0%BD%D0%B0_09.jpg'},
+  {id:'vysokoe', n:'Высокое: руины замка Сапегов', d:'Остатки дворцово-паркового ансамбля.', c:[52.36690,23.37831], cat:'extra', day:[], img:WK+'1/1c/%D0%92%D1%8B%D1%81%D0%BE%D0%BA%D0%BE%D0%B5%2C_%D0%9A%D0%B0%D0%BC%D0%B5%D0%BD%D0%B5%D1%86%D0%BA%D0%B8%D0%B9_%D1%80%D0%B0%D0%B9%D0%BE%D0%BD%2C_%D0%91%D1%80%D0%B5%D1%81%D1%82%D1%81%D0%BA%D0%B0%D1%8F_%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C%2C_%D0%91%D0%B5%D0%BB%D0%B0%D1%80%D1%83%D1%81%D1%8C_27.jpg/330px-%D0%92%D1%8B%D1%81%D0%BE%D0%BA%D0%BE%D0%B5%2C_%D0%9A%D0%B0%D0%BC%D0%B5%D0%BD%D0%B5%D1%86%D0%BA%D0%B8%D0%B9_%D1%80%D0%B0%D0%B9%D0%BE%D0%BD%2C_%D0%91%D1%80%D0%B5%D1%81%D1%82%D1%81%D0%BA%D0%B0%D1%8F_%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C%2C_%D0%91%D0%B5%D0%BB%D0%B0%D1%80%D1%83%D1%81%D1%8C_27.jpg'},
 ];
-const CATS = {home:['Жильё','#c9822b','⌂'], nature:['Природа','#2f7d52','✿'], museum:['Музеи','#3d5a80','M'], bike:['Велосипеды','#5c4b8a','B'], food:['Еда, прогулка','#8a3b3b','●'], extra:['Дополнительно','#6b7280','+']};
+const CATS = {home:['Жильё','#c9822b','⌂'], nature:['Природа','#2f7d52','✿'], museum:['Музеи','#3d5a80','M'], bike:['Велосипеды','#5c4b8a','B'], food:['Еда, прогулка','#8a3b3b','●'], extra:['Дети и прочее','#6b7280','+'], sleep:['Ночёвка в Бресте','#b5651d','H']};
 
 const DAYS = [
-  {id:1, date:'2026-11-03', title:'Дорога, вежа, купель', short:'Вт, 3 ноября', color:'var(--d1)', items:[
+  {id:1, date:'2026-11-04', title:'Дорога, вежа, купель', short:'Ср, 4 ноября', color:'var(--d1)', items:[
     ['08:30','Выезд из Лиды','~250–280 км, около 4 часов с остановками.'],
     ['12:30','Обед в Каменце',''],
     ['13:00','Каменецкая вежа','Башня XIII века, 5 ярусов. Взрослый 8,45 BYN, школьник 4,15 BYN. Зимой выход на крышу могут закрыть.','veza'],
     ['14:30','Продукты','На ужин, завтрак и мангал. Магазины в Каменце, есть и в Каменюках.'],
     ['15:00','Заселение','Forest Soul A-frame, около 10 минут от Каменца.','home'],
-    ['15:30','Прогулка к озеру Смуга','По краю леса, пока светло.','smuga'],
+    ['15:30','Прогулка к озеру Смуга','По краю леса, светло примерно до 17:30.','smuga'],
     ['17:00','Костёр и мангал','Дрова, уголь и розжиг есть в доме.'],
     ['19:00','Горячая купель','Доплата. Заранее попросите хозяев растопить к этому времени.'],
     ['20:30','Камин и кино','Проектор, винил, пледы.'],
   ]},
-  {id:2, date:'2026-11-04', title:'Пуща на велосипедах', short:'Ср, 4 ноября', color:'var(--d2)', plans:{
+  {id:2, date:'2026-11-05', title:'Пуща на велосипедах', short:'Чт, 5 ноября', color:'var(--d2)', plans:{
     A:{label:'План А · 27 км с Дедом Морозом', items:[
       ['09:30','Касса у главных ворот','Билеты на маршрут, прокат, билеты к Деду Морозу. Возьмите паспорт.','gate'],
       ['10:00','Старт «Большого путешествия»','Красный дуб, дуб-отшельник, сросшиеся сосны, Ляцкое водохранилище, дуб-патриарх.'],
@@ -357,13 +394,36 @@ const DAYS = [
       ['17:30','Ужин и купель',''],
     ]}
   }},
-  {id:3, date:'2026-11-05', title:'Брест и дорога домой', short:'Чт, 5 ноября', color:'var(--d3)', items:[
-    ['09:00','Завтрак, прогулка, сборы',''],
-    ['12:00','Выезд в Брест','~40 км, около 45 минут.','home'],
-    ['13:00','Брестская крепость','Главный вход «Звезда», монумент «Мужество», Холмские ворота, Музей обороны.','fortress'],
-    ['15:45','Музей ж/д техники','Паровозы, бронепоезда, макеты. Касса до 18:30.','rail'],
-    ['17:15','Советская улица','Ужин и вечерняя прогулка.','sovet'],
-    ['18:30','Дорога домой','~3,5–4 часа.'],
+  {id:3, date:'2026-11-06', title:'Брест: крепость и фонари', short:'Пт, 6 ноября', color:'var(--d3)', plans:{
+    A:{label:'Вечером домой', items:[
+      ['09:00','Завтрак, прогулка, сборы','Выезд из домика до 12:00.'],
+      ['12:00','Выезд в Брест','~40 км, около 45 минут.','home'],
+      ['13:00','Обед в Basilico','Пицца из печи, ул. Островского, 2.','basilico'],
+      ['14:15','Брестская крепость','Главный вход «Звезда», монумент «Мужество», Холмские ворота. Территория бесплатно.','fortress'],
+      ['15:30','Музей «Берестье»','По словам знакомой — самый интересный музей крепости. Вход до 17:30.','berestye'],
+      ['16:45','Набережная Мухавца','Переезд к центру, прогулка вдоль реки на закате.','embank'],
+      ['17:50','Фонарщик на Советской','Зажигает фонари на закате, точное время на часах у Машерова.','sovet'],
+      ['18:15','Аллея фонарей и кофе','Ул. Гоголя: фонари и Cafés la Brasileña (до 21:30).','gogol'],
+      ['19:00','Дорога домой','~250 км, 3,5–4 часа, дома около 23:00.'],
+    ]},
+    B:{label:'С ночёвкой в Бресте', items:[
+      ['09:00','Завтрак, прогулка, сборы','Выезд из домика до 12:00.'],
+      ['12:00','Выезд в Брест','~40 км, около 45 минут.','home'],
+      ['13:00','Обед в Basilico','Пицца из печи, ул. Островского, 2.','basilico'],
+      ['14:15','Брестская крепость','«Звезда», «Мужество», Холмские ворота, по желанию Музей обороны.','fortress'],
+      ['15:30','Музей «Берестье»','Самый интересный музей крепости. Вход до 17:30.','berestye'],
+      ['16:45','Заселение в отель','Оставить машину и вещи, дальше пешком.','h_gogol'],
+      ['17:50','Фонарщик на Советской','Зажигает фонари на закате.','sovet'],
+      ['18:15','Аллея фонарей, кофе','Ул. Гоголя и Cafés la Brasileña.','gogol'],
+      ['19:00','Вечерняя Советская и ужин','Без спешки, детям — VR в «Белом Лисе» до 21:00.','fox'],
+    ]}
+  }},
+  {id:4, date:'2026-11-07', title:'Если остались: попугаи и поезда', short:'Сб, 7 ноября', color:'var(--d4)', items:[
+    ['09:00','Завтрак и кофе','В отеле или в Cafés la Brasileña (с 9:00).','brasil'],
+    ['10:00','Попугайня','Кормить и держать попугаев, ~1 час. В выходные дороже, лучше записаться на сайте.','parrot'],
+    ['11:30','Музей ж/д техники','Паровозы и вагоны под открытым небом, можно залезть в кабины. 7.11 — праздник, утром позвоните.','rail'],
+    ['13:00','Обед, набережная','Если не успели вчера — прогулка вдоль Мухавца.','embank'],
+    ['14:00','Дорога домой','~3,5–4 часа, дома около 18:00. Зимний сад 7.11 закрыт.'],
   ]},
 ];
 
@@ -383,22 +443,36 @@ const NEARBY = [
   ['Полёт на Ан-2','Каменец','Лётный комплекс «Западное», работу в ноябре уточняйте.','veza'],
 ];
 
+/* Фото и отзывы: id места + подпись. Фото — Wikimedia Commons, отзывы — Яндекс Карты. */
+const PHOTOS = ['veza','zoo','fortress','berestye','sovet','gogol','basilico','brasil','embank','garden','parrot','rail','fox','kart','frost','museum'];
+
+/* Ночёвка в Бресте 6→7 ноября. Наличие на даты не проверено — звоните/бронируйте заранее. */
+const HOTELS = [
+  {id:'h_gogol', n:'Мини-отель «Гоголь»', tag:['Лучше для семьи','ok'], price:'от ~200 BYN за семейный номер', d:'На улице Гоголя, ~15 минут пешком до аллеи фонарей. Номер TWIN+2: две кровати и двухъярусная, лоджия. Общая кухня, Xbox, бесплатная парковка. Пешком до Попугайни и ж/д музея.', tel:'+375333330274', url:'https://gogol.by/nomera/semejnyj-nomer-twin-2/', src:'https://welcome.by/hotels/brest/gogol'},
+  {id:'h_herm', n:'Hermitage 4*', tag:['Самый уютный','warn'], price:'от 520 BYN за сутки', d:'4 звезды, тихий Итальянский квартал, 10–15 минут пешком до Советской. Есть двухуровневые апартаменты с сауной.', tel:'+375333274000', url:'https://hermitagehotel.by/', src:'https://hermitagehotel.by/'},
+  {id:'h_hamp', n:'Hampton by Hilton', tag:['Предсказуемо','warn'], price:'~120 € с завтраком', d:'Семейный номер: кровать queen и диван-кровать, завтрак включён, удобная парковка. До центра ~10 минут на машине.', tel:'', url:'https://www.hilton.com/en/hotels/luzbbhx-hampton-brest/', src:'https://www.belhotel.by/hotels/hampton-by-hilton-brest-by/hampton-by-hilton-brest/'},
+  {id:'', n:'Квартира на Советской', tag:['Бюджетно','ok'], price:'~100–180 BYN', d:'2–3 комнаты в центре, своя кухня. Удобно, если дети ложатся рано. Ищите на сайтах посуточной аренды.', tel:'', url:'https://brest-gid.ru/zhilye/apartamenty-1-centr', src:'https://brest-gid.ru/zhilye/apartamenty-1-centr'},
+];
+
 const BUDGET = [
   ['Каменецкая вежа',25],['Пуща: маршрут и прокат 4 велосипедов',150],['Вольеры и Музей природы',55],
-  ['Поместье Деда Мороза',140],['Брестская крепость',36],['Музей ж/д техники',25],['Купель',0],['Еда',300],['Бензин',150]
+  ['Поместье Деда Мороза',140],['Брестская крепость',36],['Музей ж/д техники (7.11, если остались)',25],['Купель',0],['Еда',300],['Бензин',150],
+  ['Музей «Берестье»',25],['Basilico и кофе',110],['Ночёвка в Бресте (если остались)',200],['Попугайня (7.11)',95]
 ];
 
 const CHECK = [
-  'Подтвердить прокат на 4.11 (2 взрослых, подростковый для 10 лет, детский для 7 лет), спросить про шлемы',
-  'Договориться с хозяевами о купели на 3.11 (и 4.11?), уточнить цену',
+  'Подтвердить прокат на 5.11 (2 взрослых, подростковый для 10 лет, детский для 7 лет), спросить про шлемы',
+  'Договориться с хозяевами о купели на 4.11 (и 5.11?), уточнить цену',
   'Паспорта или права для проката',
   'Шапки под шлем, перчатки, тёплые слои',
   'Сменная обувь и дождевики',
   'Термос, перекус на велодень',
   'Налобные фонарики, светоотражатели',
   'Мясо и продукты на мангал (купить в Каменце)',
-  'Посмотреть прогноз на 4.11: если дождь, переходите на план Б',
+  'Посмотреть прогноз на 5.11: если дождь, переходите на план Б',
   'Наличные BYN на кассу и прокат',
+  'Решить до 5.11, ночуем ли в Бресте, и забронировать отель (7.11 — праздник и каникулы)',
+  'Попугайня на 7.11: записаться на сайте',
 ];
 
 const CONTACTS = [
@@ -408,6 +482,10 @@ const CONTACTS = [
   ['E-ride, прокат','Каменюки','+375292247571'],
   ['Каменецкая вежа','музей','+375162209650'],
   ['Брестская крепость, экскурсии','Viber / WhatsApp','+375295424274'],
+  ['Basilico, пиццерия','Брест, Островского, 2','+375291082255'],
+  ['Мини-отель «Гоголь»','Брест, Гоголя, 1Г','+375333330274'],
+  ['Hermitage','Брест, Чкалова, 7','+375333274000'],
+  ['Попугайня','Брест, Фомина, 14','+375295544321'],
   ['Музей ж/д техники','Брест','+375162263764'],
 ];
 
@@ -416,6 +494,7 @@ const $ = s => document.querySelector(s);
 const store = {get:(k,d)=>{try{return JSON.parse(localStorage.getItem('pushcha:'+k))??d}catch{return d}}, set:(k,v)=>{try{localStorage.setItem('pushcha:'+k,JSON.stringify(v))}catch{}}};
 const P = Object.fromEntries(PLACES.map(p=>[p.id,p]));
 const navUrl = c => `https://yandex.by/maps/?rtext=~${c[0]},${c[1]}&rtt=auto`;
+const revUrl = p => `https://yandex.by/maps/?text=${encodeURIComponent(p.n.replace(/\s*\d\*$/,'')+' '+(p.c[0]<52.2?'Брест':'Каменецкий район'))}&ll=${p.c[1]},${p.c[0]}&z=16`;
 const gUrl = c => `https://www.google.com/maps/dir/?api=1&destination=${c[0]},${c[1]}`;
 
 // theme
@@ -428,15 +507,17 @@ $('#theme').onclick = () => { const t = document.documentElement.dataset.theme==
   const diff = TRIP_START - new Date();
   const el = $('#countdown');
   if (diff > 0){ const d=Math.floor(diff/864e5), h=Math.floor(diff%864e5/36e5); el.textContent = `До выезда: ${d} дн ${h} ч`; }
-  else if (new Date() < new Date('2026-11-06')) el.textContent = 'Поездка идёт. Хорошего отдыха!';
+  else if (new Date() < TRIP_END) el.textContent = 'Поездка идёт. Хорошего отдыха!';
   else el.textContent = 'Поездка завершена';
 })();
 
 // days
-let curDay = 1, plan = store.get('plan','A');
-function dayItems(d){ return d.plans ? d.plans[plan].items : d.items; }
+let curDay = 1;
+const planKey = d => d.id===2 ? 'plan' : 'plan'+d.id;
+const getPlan = d => { const v = store.get(planKey(d),'A'); return d.plans && d.plans[v] ? v : 'A'; };
+function dayItems(d){ return d.plans ? d.plans[getPlan(d)].items : d.items; }
 function renderTabs(){
-  $('#tabs').innerHTML = DAYS.map(d=>`<button class="tab" role="tab" aria-selected="${d.id===curDay}" data-d="${d.id}"><b>День ${d.id} · ${d.title}</b><small>${d.short}</small></button>`).join('');
+  $('#tabs').innerHTML = DAYS.map(d=>`<button class="tab" role="tab" aria-selected="${d.id===curDay}" data-d="${d.id}"><b>День ${d.id} · ${d.title}</b><small>${d.short}${d.id===4&&getPlan(DAYS[2])!=='B'?' · по желанию':''}</small></button>`).join('');
   $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{curDay=+b.dataset.d;renderTabs();renderDay();focusDay(curDay)});
 }
 function nowIndex(d){
@@ -449,13 +530,14 @@ function nowIndex(d){
 function renderDay(){
   const d = DAYS.find(x=>x.id===curDay);
   let html = '';
-  if (d.plans) html += `<div class="seg" role="group" aria-label="Вариант дня">${Object.entries(d.plans).map(([k,v])=>`<button data-p="${k}" aria-pressed="${plan===k}">${v.label}</button>`).join('')}</div>`;
+  if (d.plans) html += `<div class="seg" role="group" aria-label="Вариант дня">${Object.entries(d.plans).map(([k,v])=>`<button data-p="${k}" aria-pressed="${getPlan(d)===k}">${v.label}</button>`).join('')}</div>`;
   const ni = nowIndex(d);
-  html += `<div class="card"><ol class="timeline" style="--dc:${d.color}">` + dayItems(d).map((x,i)=>`<li class="${i===ni?'now':''}" id="it-${d.id}-${i}"><span class="t">${x[0]}</span><h4>${x[1]}</h4>${x[2]?`<p>${x[2]}</p>`:''}${x[3]&&P[x[3]]?`<p><a href="#map-s" data-fly="${x[3]}">На карте</a> · <a href="${navUrl(P[x[3]].c)}" target="_blank" rel="noopener">Маршрут</a></p>`:''}</li>`).join('') + `</ol></div>`;
+  html += `<div class="card"><ol class="timeline" style="--dc:${d.color}">` + dayItems(d).map((x,i)=>`<li class="${i===ni?'now':''}" id="it-${d.id}-${i}"><span class="t">${x[0]}</span><h4>${x[1]}</h4>${x[2]?`<p>${x[2]}</p>`:''}${x[3]&&P[x[3]]?`<p><a href="#map-s" data-fly="${x[3]}">На карте</a> · <a href="${navUrl(P[x[3]].c)}" target="_blank" rel="noopener">Маршрут</a> · <a href="${revUrl(P[x[3]])}" target="_blank" rel="noopener">Фото и отзывы</a></p>`:''}</li>`).join('') + `</ol></div>`;
   if (d.id===2) html += `<div class="note">Если прокаты в Каменюках закрыты на сезон, возьмите велосипеды в домике (7 BYN/час). На своём велосипеде въезд на маршруты стоит 15 BYN взрослый / 10 BYN ребёнок 7–14 лет.</div>`;
-  if (d.id===3) html += `<div class="note">Хотите вернуться раньше — оставьте только крепость или только ж/д музей.</div>`;
+  if (d.id===3) html += `<div class="note">Советы знакомой из Бреста: «Берестье», Советская, набережная, аллея фонарей на Гоголя, пицца в Basilico и кофе в Cafés la Brasileña. Есть лишний час до 18:00 — Зимний сад (пн–пт, ул. Мицкевича, 28/1). ${getPlan(d)==='B'?'Варианты отеля — в блоке «Ночёвка в Бресте».':'Если захотите остаться, переключитесь на «С ночёвкой» и посмотрите блок «Ночёвка в Бресте».'}</div>`;
+  if (d.id===4) html += `<div class="note">Этот день — только если остаётесь в Бресте. Ещё варианты для детей: VR «Белый Лис» (Советская, 16, от 6 лет) и картинг «Альянс» (открытая трасса, в ноябре сначала позвоните).</div>`;
   $('#daybody').innerHTML = html;
-  $('#daybody').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{plan=b.dataset.p;store.set('plan',plan);renderDay();renderToday();});
+  $('#daybody').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{store.set(planKey(d),b.dataset.p);renderDay();renderToday();renderTabs();});
   bindFly($('#daybody'));
 }
 
@@ -465,7 +547,7 @@ function renderToday(){
   const d = DAYS.find(x=>x.date===ds); const el = $('#today');
   if (!d){
     const before = new Date() < TRIP_START;
-    el.innerHTML = before ? `<span class="tag warn">Скоро</span><h3 style="margin-top:8px">Первая точка — выезд из Лиды 3 ноября в 08:30</h3><p style="color:var(--muted)">В дни поездки здесь будет текущий и следующий пункт плана.</p>`
+    el.innerHTML = before ? `<span class="tag warn">Скоро</span><h3 style="margin-top:8px">Первая точка — выезд из Лиды 4 ноября в 08:30</h3><p style="color:var(--muted)">В дни поездки здесь будет текущий и следующий пункт плана.</p>`
                           : `<span class="tag">Готово</span><h3 style="margin-top:8px">Поездка завершена</h3>`;
     return;
   }
@@ -479,7 +561,7 @@ async function loadWeather(){
   const box = $('#weather');
   box.innerHTML = DAYS.map(d=>`<div class="card wday"><small>${d.short}</small><b>…</b><small>загрузка</small></div>`).join('');
   try{
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.57&longitude=23.80&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&timezone=Europe%2FMinsk&start_date=2026-11-03&end_date=2026-11-05');
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.57&longitude=23.80&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&timezone=Europe%2FMinsk&start_date=2026-11-04&end_date=2026-11-07');
     if(!r.ok) throw 0; const j = await r.json();
     const ico = c => c===0?'Ясно':c<=3?'Облачно':c<=48?'Туман':c<=67?'Дождь':c<=77?'Снег':c<=82?'Ливень':'Гроза';
     box.innerHTML = j.daily.time.map((t,i)=>`<div class="card wday"><small>${DAYS[i].short}</small><b>${Math.round(j.daily.temperature_2m_min[i])}…${Math.round(j.daily.temperature_2m_max[i])}°</b><small>${ico(j.daily.weathercode[i])} · осадки ${j.daily.precipitation_probability_max[i]??'–'}%</small></div>`).join('');
@@ -496,9 +578,9 @@ function initMap(){
   map = L.map('map',{scrollWheelZoom:false}).setView([52.40,23.75],9);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
   PLACES.forEach(p=>{
-    markers[p.id] = L.marker(p.c,{icon:pinIcon(p.cat)}).bindPopup(`<b>${p.n}</b>${p.d}<br><a href="${navUrl(p.c)}" target="_blank" rel="noopener">Яндекс</a> · <a href="${gUrl(p.c)}" target="_blank" rel="noopener">Google</a>${p.url?` · <a href="${p.url}" target="_blank" rel="noopener">Сайт</a>`:''}`).addTo(map);
+    markers[p.id] = L.marker(p.c,{icon:pinIcon(p.cat)}).bindPopup(`<b>${p.n}</b>${p.img?`<img class="popimg" src="${p.img}" alt="${p.n}" loading="lazy">`:''}${p.d}<br><a href="${revUrl(p)}" target="_blank" rel="noopener">Фото и отзывы</a> · <a href="${navUrl(p.c)}" target="_blank" rel="noopener">Яндекс</a> · <a href="${gUrl(p.c)}" target="_blank" rel="noopener">Google</a>${p.url?` · <a href="${p.url}" target="_blank" rel="noopener">Сайт</a>`:''}`).addTo(map);
   });
-  const dayColors = ['#c9822b','#2f7d52','#8a3b3b'];
+  const dayColors = ['#c9822b','#2f7d52','#8a3b3b','#3d5a80'];
   DAYS.forEach((d,i)=>{
     const ids = [...new Set((d.plans?d.plans.A.items:d.items).map(x=>x[3]).filter(Boolean))];
     if (d.id===1) ids.unshift('veza'); 
@@ -509,7 +591,7 @@ function initMap(){
 }
 function fitAll(){ const vis = PLACES.filter(p=>activeCat==='all'||(activeCat.startsWith('d')?p.day.includes(+activeCat.slice(1)):p.cat===activeCat)); if(vis.length) map.fitBounds(L.latLngBounds(vis.map(p=>p.c)),{padding:[40,40],maxZoom:13}); }
 function renderFilters(){
-  const opts = [['all','Все'],['d1','День 1'],['d2','День 2'],['d3','День 3'],...Object.entries(CATS).map(([k,v])=>[k,v[0]])];
+  const opts = [['all','Все'],['d1','День 1'],['d2','День 2'],['d3','День 3'],['d4','День 4'],...Object.entries(CATS).map(([k,v])=>[k,v[0]])];
   $('#filters').innerHTML = opts.map(([k,l])=>`<button data-f="${k}" aria-pressed="${activeCat===k}">${l}</button>`).join('');
   $('#filters').querySelectorAll('button').forEach(b=>b.onclick=()=>{activeCat=b.dataset.f;renderFilters();applyFilter();});
 }
@@ -534,6 +616,18 @@ function renderRoutes(){
 function renderNearby(){
   $('#nearby').innerHTML = NEARBY.map(n=>`<div class="card"><span class="tag">${n[1]}</span><h3 style="font-size:1rem;margin:8px 0 4px">${n[0]}</h3><p style="color:var(--muted);font-size:.93rem">${n[2]}</p>${P[n[3]]?`<p style="margin-top:8px;font-size:.9rem"><a href="#map-s" data-fly="${n[3]}">На карте</a> · <a href="${navUrl(P[n[3]].c)}" target="_blank" rel="noopener">Маршрут</a></p>`:''}</div>`).join('');
   bindFly($('#nearby'));
+}
+
+// photos & reviews
+function renderPhotos(){
+  $('#photos').innerHTML = PHOTOS.filter(id=>P[id]).map(id=>{ const p=P[id];
+    return `<div class="card pcard"><div class="th">${p.img?`<img src="${p.img}" alt="${p.n}" loading="lazy" width="56" height="56">`:CATS[p.cat][2]}</div><div><b>${p.n}</b><a href="${revUrl(p)}" target="_blank" rel="noopener">Фото и отзывы</a>${p.rev||p.url?`<a href="${p.rev||p.url}" target="_blank" rel="noopener">Обзор</a>`:''}</div></div>`; }).join('');
+}
+
+// hotels
+function renderHotels(){
+  $('#hotels').innerHTML = HOTELS.map(h=>`<div class="card hotel"><span class="tag ${h.tag[1]}">${h.tag[0]}</span><h3>${h.n}</h3><p class="price">${h.price}</p><p style="color:var(--muted);font-size:.93rem">${h.d}</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">${h.tel?`<a class="btn" href="tel:${h.tel}">Позвонить</a>`:''}<a class="btn ${h.tel?'ghost':''}" href="${h.url}" target="_blank" rel="noopener">Бронь / сайт</a>${h.id&&P[h.id]?`<a class="btn ghost" href="#map-s" data-fly="${h.id}">На карте</a>`:''}</div></div>`).join('');
+  bindFly($('#hotels'));
 }
 
 // budget
@@ -562,9 +656,10 @@ function renderContacts(){
 // search
 function initSearch(){
   const idx = [];
-  DAYS.forEach(d=>{ const all = d.plans?[...d.plans.A.items.map(x=>[...x,'A']),...d.plans.B.items.map(x=>[...x,'B'])]:d.items; all.forEach((x,i)=>idx.push({t:x[1],s:`День ${d.id} · ${x[0]}${x[4]?' · план '+x[4]:''}`,txt:(x[1]+' '+x[2]).toLowerCase(),go:()=>{curDay=d.id; if(x[4]){plan=x[4];store.set('plan',plan)} renderTabs();renderDay(); const items=dayItems(d); const j=items.findIndex(y=>y[1]===x[1]); const el=document.getElementById(`it-${d.id}-${j}`); if(el){el.scrollIntoView({block:'center'});el.classList.add('hl');setTimeout(()=>el.classList.remove('hl'),1600);} }})); });
+  DAYS.forEach(d=>{ const all = d.plans?[...d.plans.A.items.map(x=>[...x,'A']),...d.plans.B.items.map(x=>[...x,'B'])]:d.items; all.forEach((x,i)=>idx.push({t:x[1],s:`День ${d.id} · ${x[0]}${x[4]?' · план '+x[4]:''}`,txt:(x[1]+' '+x[2]).toLowerCase(),go:()=>{curDay=d.id; if(x[4]){store.set(planKey(d),x[4])} renderTabs();renderDay(); const items=dayItems(d); const j=items.findIndex(y=>y[1]===x[1]); const el=document.getElementById(`it-${d.id}-${j}`); if(el){el.scrollIntoView({block:'center'});el.classList.add('hl');setTimeout(()=>el.classList.remove('hl'),1600);} }})); });
   PLACES.forEach(p=>idx.push({t:p.n,s:'Место на карте',txt:(p.n+' '+p.d).toLowerCase(),go:()=>{document.getElementById('map-s').scrollIntoView();flyTo(p.id);}}));
   ROUTES.forEach(r=>idx.push({t:r.n,s:`Веломаршрут · ${r.km} км`,txt:(r.n+' '+r.d+' велосипед вело').toLowerCase(),go:()=>document.getElementById('bike').scrollIntoView()}));
+  HOTELS.forEach(h=>idx.push({t:h.n,s:'Ночёвка в Бресте · '+h.price,txt:(h.n+' '+h.d+' отель гостиница ночёвка').toLowerCase(),go:()=>document.getElementById('sleep').scrollIntoView()}));
   CHECK.forEach(c=>idx.push({t:c,s:'Чек-лист',txt:c.toLowerCase(),go:()=>document.getElementById('check').scrollIntoView()}));
   CONTACTS.forEach(c=>idx.push({t:c[0],s:'Контакт · '+c[2],txt:(c[0]+' '+c[1]+' телефон').toLowerCase(),go:()=>document.getElementById('contacts').scrollIntoView()}));
   const q=$('#q'), res=$('#results');
@@ -599,7 +694,7 @@ $('#locate').onclick=locate;
 
 // offline tiles
 function tileList(){
-  const set=new Set(), pts=PLACES.filter(p=>p.day.length).map(p=>p.c);
+  const set=new Set(), pts=PLACES.filter(p=>p.day.length||p.cat==='sleep').map(p=>p.c);
   const add=(z,lat,lon,r)=>{
     const n=2**z, x=(lon+180)/360*n, la=lat*Math.PI/180, y=(1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*n;
     const tr=r/(40075016*Math.cos(la)/n);
@@ -641,7 +736,7 @@ $('#importfile').onchange=async e=>{
   }catch{ ioMsg('Не удалось прочитать файл: нужен JSON, экспортированный из этой страницы.'); }
 };
 
-renderToday(); renderTabs(); renderDay(); loadWeather(); renderFilters(); initMap(); renderRoutes(); renderNearby(); renderBudget(); renderCheck(); renderContacts(); initSearch();
+renderToday(); renderTabs(); renderDay(); loadWeather(); renderFilters(); initMap(); renderRoutes(); renderNearby(); renderPhotos(); renderHotels(); renderBudget(); renderCheck(); renderContacts(); initSearch();
 </script>
 </body>
 </html>
